@@ -5,12 +5,17 @@ on:
     tags:
       - 'stg-be-*'
       - 'stg-fe-*'
+      - 'prod-be-*'
+      - 'prod-fe-*'
 
 env:
-  AWS_REGION: ${{ vars.AWS_REGION }}        
+  AWS_REGION: ${{ vars.AWS_REGION }}      
+  FE_ECR_REPO_NAME: ecs-prac/fe
+  BE_ECR_REPO_NAME: ecs-prac/be
 
 jobs:
   deploy_fe_stg:
+    name: Deploy Frontend to ECS
     environment: staging
     if: startsWith(github.ref, 'refs/tags/stg-fe-')
     runs-on: ubuntu-latest
@@ -32,21 +37,21 @@ jobs:
         id: login-ecr
         uses: aws-actions/amazon-ecr-login@v2
 
+      - name: Set ECR registry to env
+        run: echo "ECR_REGISTRY=${{ steps.login-ecr.outputs.registry }}" >> $GITHUB_ENV
+
       - name: Extract version from tag
         run: echo "VERSION=${{ github.ref_name }}" >> $GITHUB_ENV
 
       - name: Build the Frontend Docker image
-        run: echo "${{ env.VERSION }}, ${{ github.sha }},  ${{ steps.login-ecr.outputs.registry }}"
+        run: docker build -t ${{ env.ECR_REGISTRY }}/${{ env.FE_ECR_REPO_NAME }}:${{ env.VERSION }} ./frontend
 
-      # - name: Build the Frontend Docker image
-      #   run: |
-      #     docker build -t ${{ secrets.AWS_ECR_REGISTRY }}/frontend:${{ env.VERSION }} ./frontend
-
-      # - name: Push the Frontend Docker image
-      #   run: |
-      #     docker push ${{ secrets.AWS_ECR_REGISTRY }}/frontend:${{ env.VERSION }}
+      - name: Push the Frontend Docker image
+        run: docker push ${{ env.ECR_REGISTRY }}/${{ env.FE_ECR_REPO_NAME }}:${{ env.VERSION }}
 
   deploy_be_stg:
+    name: Deploy Backend to ECS
+    environment: staging
     if: startsWith(github.ref, 'refs/tags/stg-be-')
     runs-on: ubuntu-latest
     steps:
