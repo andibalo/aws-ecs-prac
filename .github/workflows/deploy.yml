@@ -41,9 +41,10 @@ jobs:
         run: echo "ECR_REGISTRY=${{ steps.login-ecr.outputs.registry }}" >> $GITHUB_ENV
 
       - name: Set environment variable
-        run: |
-          echo "REACT_APP_API_BASE_URL=${{ secrets.REACT_APP_API_BASE_URL }}" >> .env
-          cat .env
+        run: echo "REACT_APP_API_BASE_URL=${{ secrets.REACT_APP_API_BASE_URL }}" >> .env
+
+      - name: test
+        run: cat .env
 
       - name: Extract version from tag
         run: echo "VERSION=${{ github.ref_name }}" >> $GITHUB_ENV
