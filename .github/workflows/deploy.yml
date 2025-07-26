@@ -1,0 +1,88 @@
+name: Deploy to ECS
+
+on:
+  push:
+    tags:
+      - 'stg-be-*'
+      - 'stg-fe-*'
+      - 'prod-be-*'
+      - 'prod-fe-*'
+
+env:
+  AWS_REGION: ${{ vars.AWS_REGION }}      
+  FE_ECR_REPO_NAME: ecs-prac/fe
+  BE_ECR_REPO_NAME: ecs-prac/be
+
+jobs:
+  deploy_fe_stg:
+    name: Deploy Frontend to ECS
+    environment: staging
+    if: startsWith(github.ref, 'refs/tags/stg-fe-')
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ env.AWS_REGION }}
+
+      - name: Log in to Amazon ECR
+        id: login-ecr
+        uses: aws-actions/amazon-ecr-login@v2
+
+      - name: Set ECR registry to env
+        run: echo "ECR_REGISTRY=${{ steps.login-ecr.outputs.registry }}" >> $GITHUB_ENV
+
+      - name: Set environment variable
+        run: echo "REACT_APP_API_BASE_URL=${{ secrets.REACT_APP_API_BASE_URL }}" >> ./frontend/.env
+
+      - name: Extract version from tag
+        run: echo "VERSION=${{ github.ref_name }}" >> $GITHUB_ENV
+
+      - name: Build the Frontend Docker image
+        run: docker build -t ${{ env.ECR_REGISTRY }}/${{ env.FE_ECR_REPO_NAME }}:${{ env.VERSION }} ./frontend
+
+      - name: Push the Frontend Docker image
+        run: docker push ${{ env.ECR_REGISTRY }}/${{ env.FE_ECR_REPO_NAME }}:${{ env.VERSION }}
+
+  deploy_be_stg:
+    name: Deploy Backend to ECS
+    environment: staging
+    if: startsWith(github.ref, 'refs/tags/stg-be-')
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ env.AWS_REGION }}
+
+      - name: Log in to Amazon ECR
+        id: login-ecr
+        uses: aws-actions/amazon-ecr-login@v2
+
+      - name: Set ECR registry to env
+        run: echo "ECR_REGISTRY=${{ steps.login-ecr.outputs.registry }}" >> $GITHUB_ENV
+
+      - name: Extract version from tag
+        run: echo "VERSION=${{ github.ref_name }}" >> $GITHUB_ENV
+
+      - name: Build the Backend Docker image
+        run: docker build -t ${{ env.ECR_REGISTRY }}/${{ env.BE_ECR_REPO_NAME }}:${{ env.VERSION }} ./backend
+
+      - name: Push the Backend Docker image
+        run: docker push ${{ env.ECR_REGISTRY }}/${{ env.BE_ECR_REPO_NAME }}:${{ env.VERSION }}
