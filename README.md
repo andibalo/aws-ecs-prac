@@ -2,6 +2,29 @@
 
 This repository contains a boilerplate project that integrates Golang as the backend, React as the frontend, and Docker for containerization. This setup is ideal for developers looking to build scalable and maintainable web applications with modern technologies.
 
+## CI/CD
+This GitHub Actions workflow is designed to deploy both the Frontend (React app) and Backend to Amazon ECS (Elastic Container Service). It triggers the deployment process when specific Git tags (such as stg-fe-* for frontend and stg-be-* for backend) are pushed to the repository.
+
+`actions/checkout`
+
+Uses the `actions/checkout` action to clone the repository into the GitHub runner.
+
+`docker/setup-buildx-action`
+
+Uses the `docker/setup-buildx-action` to set up Docker Buildx to build images
+
+**React Deployment**
+
+React is deployed by building the react files into a static file which is then served by a web server like nginx. To pass environment variable we can do it during build time or runtime, in this case we do it during build time. To do it we need to create our environment variables in github actions, create a .env file in our github runner and append the env variables to it before building the image
+
+## References
+
+- **Github Actions Components**: https://docs.github.com/en/actions/get-started/understand-github-actions
+- **Deploy To ECS from Github Actions**: https://docs.github.com/en/actions/how-tos/deploy/deploy-to-third-party-platforms/amazon-elastic-container-service
+- **Push Image To ECR from Github Actions**: https://github.com/aws-actions/amazon-ecr-login
+- **Github Actions Environment**: https://docs.github.com/en/actions/how-tos/deploy/configure-and-manage-deployments/manage-environments#creating-an-environment
+- **React Inject Env Variables (Buildtime vs Runtime)**: https://pamalsahan.medium.com/dockerizing-a-react-application-injecting-environment-variables-at-build-vs-run-time-d74b6796fe38
+
 ## Features
 
 - **Golang Backend**: A robust and efficient backend using Golang.
