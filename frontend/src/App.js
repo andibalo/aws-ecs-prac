@@ -8,6 +8,8 @@ import CreateUserComponent from "./components/CreateUserComponent";
 import ViewUserComponent from "./components/ViewUserComponent";
 
 function App() {
+  console.log("REACT_APP_API_BASE_URL: ", process.env.REACT_APP_API_BASE_URL);
+
       return (
         <div>
             <Router>
