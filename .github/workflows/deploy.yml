@@ -78,7 +78,6 @@ jobs:
           service: ${{ env.ECS_SERVICE }}
           cluster: ${{ env.ECS_CLUSTER }}
           wait-for-service-stability: true
-          force-new-deployment: true
 
   deploy_be_stg:
     name: Deploy Backend to ECS
