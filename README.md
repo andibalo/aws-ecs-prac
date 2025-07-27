@@ -99,6 +99,7 @@ Note: You will be prompted to enter the OpenVPN password.
     - When creating cluster choose wheter Fargate/EC2 or both
     - After creating task definition, download as json for based task deinition to be used in CI/CD pipeline
     - When creating service, use existing load balancer
+    - Destination of target group of type IP address will be automatically updated with the private ip address of the created task.
 9. Add CNAME record for example `api.andisandbox.my.id` that will point to ALB DNS
 
 ## CI/CD
