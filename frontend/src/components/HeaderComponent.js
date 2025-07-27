@@ -18,7 +18,7 @@ class HeaderComponent extends Component {
                         <div>
                             <a href="/users"
                                 className="navbar-brand">
-                                    User CRUD using Golang
+                                    User CRUD using Golang, Test auto deployment
                             </a></div>
                     </nav>
                 </header>
