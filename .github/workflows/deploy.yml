@@ -110,23 +110,29 @@ jobs:
         run: echo "VERSION=${{ github.ref_name }}" >> $GITHUB_ENV
 
       - name: Build the Backend Docker image
-        run: docker build -t ${{ env.ECR_REGISTRY }}/${{ env.BE_ECR_REPO_NAME }}:${{ env.VERSION }} ./backend
+        run: |
+          docker build -t ${{ env.ECR_REGISTRY }}/${{ env.BE_ECR_REPO_NAME }}:${{ env.VERSION }} ./backend
+          echo "image=${{ env.ECR_REGISTRY }}/${{ env.BE_ECR_REPO_NAME }}:${{ env.VERSION }}" >> $GITHUB_OUTPUT
 
       - name: Push the Backend Docker image
         run: docker push ${{ env.ECR_REGISTRY }}/${{ env.BE_ECR_REPO_NAME }}:${{ env.VERSION }}
 
       - name: Fill in the new image ID in the Amazon ECS task definition
         id: task-def
-        uses: aws-actions/amazon-ecs-render-task-definition@c804dfbdd57f713b6c079302a4c01db7017a36fc
+        uses: aws-actions/amazon-ecs-render-task-definition@v1
         with:
-          task-definition: ${{ env.ECS_TASK_DEFINITION }}
-          container-name: ${{ env.CONTAINER_NAME }}
+          task-definition: ./infra/be-task-definition.json
+          container-name: ${{ env.BE_CONTAINER_NAME }}
           image: ${{ steps.build-image.outputs.image }}
 
+      - name: Log task definition
+        run: cat ${{ steps.task-def.outputs.task-definition }}
+
       - name: Deploy Amazon ECS task definition
-        uses: aws-actions/amazon-ecs-deploy-task-definition@df9643053eda01f169e64a0e60233aacca83799a
+        uses: aws-actions/amazon-ecs-deploy-task-definition@v2
         with:
           task-definition: ${{ steps.task-def.outputs.task-definition }}
-          service: ${{ env.FE_ECS_SERVICE }}
+          service: ${{ env.BE_ECS_SERVICE }}
           cluster: ${{ env.ECS_CLUSTER }}
           wait-for-service-stability: true
+          force-new-deployment: true
