@@ -1,0 +1,64 @@
+{
+    "taskDefinitionArn": "arn:aws:ecs:ap-southeast-1:276531032295:task-definition/twotier-fe:6",
+    "containerDefinitions": [
+        {
+            "name": "two-tier-frontend",
+            "image": "276531032295.dkr.ecr.ap-southeast-1.amazonaws.com/ecs-prac/fe:stg-fe-v0.0.11",
+            "cpu": 0,
+            "portMappings": [
+                {
+                    "name": "twotier-frontend-tcp",
+                    "containerPort": 80,
+                    "hostPort": 80,
+                    "protocol": "tcp",
+                    "appProtocol": "http"
+                }
+            ],
+            "essential": true,
+            "environment": [],
+            "environmentFiles": [],
+            "mountPoints": [],
+            "volumesFrom": [],
+            "ulimits": [],
+            "systemControls": []
+        }
+    ],
+    "family": "twotier-fe",
+    "executionRoleArn": "arn:aws:iam::276531032295:role/ecsTaskExecutionRole",
+    "networkMode": "awsvpc",
+    "revision": 6,
+    "volumes": [],
+    "status": "ACTIVE",
+    "requiresAttributes": [
+        {
+            "name": "com.amazonaws.ecs.capability.ecr-auth"
+        },
+        {
+            "name": "ecs.capability.execution-role-ecr-pull"
+        },
+        {
+            "name": "com.amazonaws.ecs.capability.docker-remote-api.1.18"
+        },
+        {
+            "name": "ecs.capability.task-eni"
+        }
+    ],
+    "placementConstraints": [],
+    "compatibilities": [
+        "EC2",
+        "FARGATE"
+    ],
+    "requiresCompatibilities": [
+        "FARGATE"
+    ],
+    "cpu": "1024",
+    "memory": "3072",
+    "runtimePlatform": {
+        "cpuArchitecture": "X86_64",
+        "operatingSystemFamily": "LINUX"
+    },
+    "registeredAt": "2025-07-27T07:23:32.064Z",
+    "registeredBy": "arn:aws:iam::276531032295:user/superadmin",
+    "enableFaultInjection": false,
+    "tags": []
+}
