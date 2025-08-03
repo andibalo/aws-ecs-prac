@@ -48,3 +48,11 @@ terraform import aws_ecs_cluster.two_tier_stg_ecs_cluster TwoTierCluster
 terraform import aws_ecr_repository.two_tier_stg_fe ecs-prac/fe
 
 terraform import aws_ecr_repository.two_tier_stg_be ecs-prac/be
+
+# Import ACM
+terraform import aws_acm_certificate.two_tier_stg_dns_cert arn:aws:acm:ap-southeast-1:276531032295:certificate/68440355-fea8-4275-9a3a-0e97288d06ab
+
+# Import target groups
+terraform import aws_lb_target_group.two_tier_stg_ecs_be_tg arn:aws:elasticloadbalancing:ap-southeast-1:276531032295:targetgroup/twotier-ecs-be-tg/79bc02474abdb088 
+ 
+terraform import aws_lb_target_group.two_tier_stg_ecs_fe_tg arn:aws:elasticloadbalancing:ap-southeast-1:276531032295:targetgroup/twotier-ecs-fe-tg/140287d1e526109b 

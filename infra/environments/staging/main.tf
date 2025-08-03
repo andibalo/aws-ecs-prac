@@ -41,7 +41,7 @@ resource "aws_subnet" "two_tier_stg_public_subnet_1a" {
   tags_all = {
     "Name" = "two-tier-subnet-public1-ap-southeast-1a"
   }
-  vpc_id = "vpc-0d8eb46653bd7e4e9"
+  vpc_id = aws_vpc.two_tier_stg_vpc.id
 }
 
 resource "aws_subnet" "two_tier_stg_public_subnet_1b" {
@@ -65,7 +65,7 @@ resource "aws_subnet" "two_tier_stg_public_subnet_1b" {
   tags_all = {
     "Name" = "two-tier-subnet-public1-ap-southeast-1b"
   }
-  vpc_id = "vpc-0d8eb46653bd7e4e9"
+  vpc_id = aws_vpc.two_tier_stg_vpc.id
 }
 
 resource "aws_subnet" "two_tier_stg_private_subnet_app_1a" {
@@ -89,7 +89,7 @@ resource "aws_subnet" "two_tier_stg_private_subnet_app_1a" {
   tags_all = {
     "Name" = "two-tier-subnet-private-app-ap-southeast-1a"
   }
-  vpc_id = "vpc-0d8eb46653bd7e4e9"
+  vpc_id = aws_vpc.two_tier_stg_vpc.id
 }
 
 resource "aws_subnet" "two_tier_stg_private_subnet_db_1a" {
@@ -110,7 +110,7 @@ resource "aws_subnet" "two_tier_stg_private_subnet_db_1a" {
     Name = "two-tier-subnet-private-db-ap-southeast-1a"
   }
 
-  vpc_id = "vpc-0d8eb46653bd7e4e9"
+  vpc_id = aws_vpc.two_tier_stg_vpc.id
 }
 
 resource "aws_subnet" "two_tier_stg_private_subnet_db_1b" {
@@ -131,7 +131,7 @@ resource "aws_subnet" "two_tier_stg_private_subnet_db_1b" {
     Name = "two-tier-subnet-private-db-ap-southeast-1b"
   }
 
-  vpc_id = "vpc-0d8eb46653bd7e4e9"
+  vpc_id = aws_vpc.two_tier_stg_vpc.id
 }
 
 # SECURITY GROUPS
@@ -154,7 +154,7 @@ resource "aws_security_group" "two_tier_stg_default_sg" {
   }
 
   name   = "default"
-  vpc_id = "vpc-0d8eb46653bd7e4e9"
+  vpc_id = aws_vpc.two_tier_stg_vpc.id
 }
 
 resource "aws_security_group" "two_tier_stg_alb_sg" {
@@ -194,7 +194,7 @@ resource "aws_security_group" "two_tier_stg_alb_sg" {
     Name = "two-tier-alb-sg"
   }
 
-  vpc_id = "vpc-0d8eb46653bd7e4e9"
+  vpc_id = aws_vpc.two_tier_stg_vpc.id
 }
 
 resource "aws_security_group" "two_tier_stg_app_sg" {
@@ -258,7 +258,7 @@ resource "aws_security_group" "two_tier_stg_app_sg" {
     Name = "two-tier-app-sg"
   }
 
-  vpc_id = "vpc-0d8eb46653bd7e4e9"
+  vpc_id = aws_vpc.two_tier_stg_vpc.id
 }
 
 resource "aws_security_group" "two_tier_stg_open_vpn_sg" {
@@ -322,7 +322,7 @@ resource "aws_security_group" "two_tier_stg_open_vpn_sg" {
     Name = "two-tier-open-vpn-sg"
   }
 
-  vpc_id = "vpc-0d8eb46653bd7e4e9"
+  vpc_id = aws_vpc.two_tier_stg_vpc.id
 }
 
 resource "aws_security_group" "two_tier_stg_rds_sg" {
@@ -354,7 +354,7 @@ resource "aws_security_group" "two_tier_stg_rds_sg" {
     Name = "two-tier-rds-sg"
   }
 
-  vpc_id = "vpc-0d8eb46653bd7e4e9"
+  vpc_id = aws_vpc.two_tier_stg_vpc.id
 }
 
 resource "aws_security_group" "two_tier_stg_all_sg" {
@@ -386,7 +386,7 @@ resource "aws_security_group" "two_tier_stg_all_sg" {
     Name = "twotier-all-sg"
   }
 
-  vpc_id = "vpc-0d8eb46653bd7e4e9"
+  vpc_id = aws_vpc.two_tier_stg_vpc.id
 }
 
 resource "aws_security_group" "two_tier_stg_ecs_sg" {
@@ -418,7 +418,7 @@ resource "aws_security_group" "two_tier_stg_ecs_sg" {
     Name = "twotier-ecs-sg"
   }
 
-  vpc_id = "vpc-0d8eb46653bd7e4e9"
+  vpc_id = aws_vpc.two_tier_stg_vpc.id
 }
 
 # INTERNET GATEWAY
@@ -430,7 +430,7 @@ resource "aws_internet_gateway" "two_tier_stg_igw" {
   tags_all = {
     "Name" = "two-tier-igw"
   }
-  vpc_id = "vpc-0d8eb46653bd7e4e9"
+  vpc_id = aws_vpc.two_tier_stg_vpc.id
 }
 
 # ROUTE TABLES
@@ -440,7 +440,7 @@ resource "aws_route_table" "two_tier_stg_default_rtb" {
   route            = []
   tags             = {}
   tags_all         = {}
-  vpc_id           = "vpc-0d8eb46653bd7e4e9"
+  vpc_id           = aws_vpc.two_tier_stg_vpc.id
 }
 
 resource "aws_route_table" "two_tier_stg_rtb_public" {
@@ -453,7 +453,7 @@ resource "aws_route_table" "two_tier_stg_rtb_public" {
       core_network_arn           = null
       destination_prefix_list_id = null
       egress_only_gateway_id     = null
-      gateway_id                 = "igw-0b211e3e7afaf01e0"
+      gateway_id                 = aws_internet_gateway.two_tier_stg_igw.id
       ipv6_cidr_block            = null
       local_gateway_id           = null
       nat_gateway_id             = null
@@ -469,7 +469,7 @@ resource "aws_route_table" "two_tier_stg_rtb_public" {
   tags_all = {
     "Name" = "two-tier-rtb-public"
   }
-  vpc_id = "vpc-0d8eb46653bd7e4e9"
+  vpc_id = aws_vpc.two_tier_stg_vpc.id
 }
 
 resource "aws_route_table" "two_tier_stg_rtb_private" {
@@ -482,7 +482,7 @@ resource "aws_route_table" "two_tier_stg_rtb_private" {
   tags_all = {
     "Name" = "two-tier-rtb-private1-ap-southeast-1a"
   }
-  vpc_id = "vpc-0d8eb46653bd7e4e9"
+  vpc_id = aws_vpc.two_tier_stg_vpc.id
 }
 
 # ECS
@@ -531,4 +531,124 @@ resource "aws_ecr_repository" "two_tier_stg_be" {
   image_scanning_configuration {
     scan_on_push = false
   }
+}
+
+# ACM
+resource "aws_acm_certificate" "two_tier_stg_dns_cert" {
+  certificate_authority_arn = null
+  domain_name               = "andisandbox.my.id"
+  early_renewal_duration    = null
+  key_algorithm             = "RSA_2048"
+  region                    = "ap-southeast-1"
+  subject_alternative_names = [
+    "*.andisandbox.my.id",
+    "andisandbox.my.id",
+  ]
+  tags              = {}
+  tags_all          = {}
+  validation_method = "DNS"
+
+  options {
+    certificate_transparency_logging_preference = "ENABLED"
+    export                                      = "DISABLED"
+  }
+}
+
+# TARGET GROUPS
+resource "aws_lb_target_group" "two_tier_stg_ecs_be_tg" {
+  deregistration_delay              = "300"
+  ip_address_type                   = "ipv4"
+  load_balancing_algorithm_type     = "round_robin"
+  load_balancing_anomaly_mitigation = "off"
+  load_balancing_cross_zone_enabled = "use_load_balancer_configuration"
+  name                              = "twotier-ecs-be-tg"
+  name_prefix                       = null
+  port                              = 8080
+  protocol                          = "HTTP"
+  protocol_version                  = "HTTP1"
+  region                            = "ap-southeast-1"
+  slow_start                        = 0
+  tags                              = {}
+  tags_all                          = {}
+  target_type                       = "ip"
+  vpc_id                            = aws_vpc.two_tier_stg_vpc.id
+
+  health_check {
+    enabled             = true
+    healthy_threshold   = 5
+    interval            = 30
+    matcher             = "200"
+    path                = "/users"
+    port                = "traffic-port"
+    protocol            = "HTTP"
+    timeout             = 5
+    unhealthy_threshold = 2
+  }
+
+  stickiness {
+    cookie_duration = 86400
+    cookie_name     = null
+    enabled         = false
+    type            = "lb_cookie"
+  }
+
+  target_group_health {
+    dns_failover {
+      minimum_healthy_targets_count      = "1"
+      minimum_healthy_targets_percentage = "off"
+    }
+    unhealthy_state_routing {
+      minimum_healthy_targets_count      = 1
+      minimum_healthy_targets_percentage = "off"
+    }
+  }
+}
+
+resource "aws_lb_target_group" "two_tier_stg_ecs_fe_tg" {
+    deregistration_delay              = "300"
+    ip_address_type                   = "ipv4"
+    load_balancing_algorithm_type     = "round_robin"
+    load_balancing_anomaly_mitigation = "off"
+    load_balancing_cross_zone_enabled = "use_load_balancer_configuration"
+    name                              = "twotier-ecs-fe-tg"
+    name_prefix                       = null
+    port                              = 80
+    protocol                          = "HTTP"
+    protocol_version                  = "HTTP1"
+    region                            = "ap-southeast-1"
+    slow_start                        = 0
+    tags                              = {}
+    tags_all                          = {}
+    target_type                       = "ip"
+    vpc_id                            = aws_vpc.two_tier_stg_vpc.id
+
+    health_check {
+        enabled             = true
+        healthy_threshold   = 5
+        interval            = 30
+        matcher             = "200"
+        path                = "/"
+        port                = "traffic-port"
+        protocol            = "HTTP"
+        timeout             = 5
+        unhealthy_threshold = 2
+    }
+
+    stickiness {
+        cookie_duration = 86400
+        cookie_name     = null
+        enabled         = false
+        type            = "lb_cookie"
+    }
+
+    target_group_health {
+        dns_failover {
+            minimum_healthy_targets_count      = "1"
+            minimum_healthy_targets_percentage = "off"
+        }
+        unhealthy_state_routing {
+            minimum_healthy_targets_count      = 1
+            minimum_healthy_targets_percentage = "off"
+        }
+    }
 }
