@@ -1,1 +1,3 @@
+#!/bin/bash
+
 terraformer import aws --resources=sg,vpc,subnet,igw,ecs,nacl,route_table --filter=vpc=vpc-0d8eb46653bd7e4e9 --regions=ap-southeast-1 --profile=andib 
