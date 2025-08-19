@@ -1,3 +1,7 @@
+output "aws_vpc--two_tier_stg_vpc" {
+  value = aws_vpc.two_tier_stg_vpc.id
+}
+
 output "aws_security_group--two_tier_stg_default_sg" {
   value = aws_security_group.two_tier_stg_default_sg.id
 }

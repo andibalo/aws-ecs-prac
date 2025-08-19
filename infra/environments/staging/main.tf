@@ -10,7 +10,6 @@ resource "aws_vpc" "two_tier_stg_vpc" {
   ipv6_cidr_block                      = null
   ipv6_cidr_block_network_border_group = null
   ipv6_ipam_pool_id                    = null
-  region                               = "ap-southeast-1"
   tags = {
     "Name" = "two-tier-vpc"
   }
@@ -34,14 +33,13 @@ resource "aws_subnet" "two_tier_stg_public_subnet_1a" {
   map_public_ip_on_launch                        = false
   outpost_arn                                    = null
   private_dns_hostname_type_on_launch            = "ip-name"
-  region                                         = "ap-southeast-1"
   tags = {
     "Name" = "two-tier-subnet-public1-ap-southeast-1a"
   }
   tags_all = {
     "Name" = "two-tier-subnet-public1-ap-southeast-1a"
   }
-  vpc_id = "vpc-0d8eb46653bd7e4e9"
+  vpc_id = aws_vpc.two_tier_stg_vpc.id
 }
 
 resource "aws_subnet" "two_tier_stg_public_subnet_1b" {
@@ -58,14 +56,13 @@ resource "aws_subnet" "two_tier_stg_public_subnet_1b" {
   map_public_ip_on_launch                        = false
   outpost_arn                                    = null
   private_dns_hostname_type_on_launch            = "ip-name"
-  region                                         = "ap-southeast-1"
   tags = {
     "Name" = "two-tier-subnet-public1-ap-southeast-1b"
   }
   tags_all = {
     "Name" = "two-tier-subnet-public1-ap-southeast-1b"
   }
-  vpc_id = "vpc-0d8eb46653bd7e4e9"
+  vpc_id = aws_vpc.two_tier_stg_vpc.id
 }
 
 resource "aws_subnet" "two_tier_stg_private_subnet_app_1a" {
@@ -82,14 +79,13 @@ resource "aws_subnet" "two_tier_stg_private_subnet_app_1a" {
   map_public_ip_on_launch                        = false
   outpost_arn                                    = null
   private_dns_hostname_type_on_launch            = "ip-name"
-  region                                         = "ap-southeast-1"
   tags = {
     "Name" = "two-tier-subnet-private-app-ap-southeast-1a"
   }
   tags_all = {
     "Name" = "two-tier-subnet-private-app-ap-southeast-1a"
   }
-  vpc_id = "vpc-0d8eb46653bd7e4e9"
+  vpc_id = aws_vpc.two_tier_stg_vpc.id
 }
 
 resource "aws_subnet" "two_tier_stg_private_subnet_db_1a" {
@@ -101,7 +97,6 @@ resource "aws_subnet" "two_tier_stg_private_subnet_db_1a" {
   ipv6_native                                    = "false"
   map_public_ip_on_launch                        = "false"
   private_dns_hostname_type_on_launch            = "ip-name"
-  region                                         = "ap-southeast-1"
   tags = {
     Name = "two-tier-subnet-private-db-ap-southeast-1a"
   }
@@ -110,7 +105,7 @@ resource "aws_subnet" "two_tier_stg_private_subnet_db_1a" {
     Name = "two-tier-subnet-private-db-ap-southeast-1a"
   }
 
-  vpc_id = "vpc-0d8eb46653bd7e4e9"
+  vpc_id = aws_vpc.two_tier_stg_vpc.id
 }
 
 resource "aws_subnet" "two_tier_stg_private_subnet_db_1b" {
@@ -122,7 +117,6 @@ resource "aws_subnet" "two_tier_stg_private_subnet_db_1b" {
   ipv6_native                                    = "false"
   map_public_ip_on_launch                        = "false"
   private_dns_hostname_type_on_launch            = "ip-name"
-  region                                         = "ap-southeast-1"
   tags = {
     Name = "two-tier-subnet-private-db-ap-southeast-1b"
   }
@@ -131,7 +125,7 @@ resource "aws_subnet" "two_tier_stg_private_subnet_db_1b" {
     Name = "two-tier-subnet-private-db-ap-southeast-1b"
   }
 
-  vpc_id = "vpc-0d8eb46653bd7e4e9"
+  vpc_id = aws_vpc.two_tier_stg_vpc.id
 }
 
 # SECURITY GROUPS
@@ -154,7 +148,7 @@ resource "aws_security_group" "two_tier_stg_default_sg" {
   }
 
   name   = "default"
-  vpc_id = "vpc-0d8eb46653bd7e4e9"
+  vpc_id = aws_vpc.two_tier_stg_vpc.id
 }
 
 resource "aws_security_group" "two_tier_stg_alb_sg" {
@@ -194,7 +188,7 @@ resource "aws_security_group" "two_tier_stg_alb_sg" {
     Name = "two-tier-alb-sg"
   }
 
-  vpc_id = "vpc-0d8eb46653bd7e4e9"
+  vpc_id = aws_vpc.two_tier_stg_vpc.id
 }
 
 resource "aws_security_group" "two_tier_stg_app_sg" {
@@ -258,7 +252,7 @@ resource "aws_security_group" "two_tier_stg_app_sg" {
     Name = "two-tier-app-sg"
   }
 
-  vpc_id = "vpc-0d8eb46653bd7e4e9"
+  vpc_id = aws_vpc.two_tier_stg_vpc.id
 }
 
 resource "aws_security_group" "two_tier_stg_open_vpn_sg" {
@@ -322,7 +316,7 @@ resource "aws_security_group" "two_tier_stg_open_vpn_sg" {
     Name = "two-tier-open-vpn-sg"
   }
 
-  vpc_id = "vpc-0d8eb46653bd7e4e9"
+  vpc_id = aws_vpc.two_tier_stg_vpc.id
 }
 
 resource "aws_security_group" "two_tier_stg_rds_sg" {
@@ -354,7 +348,7 @@ resource "aws_security_group" "two_tier_stg_rds_sg" {
     Name = "two-tier-rds-sg"
   }
 
-  vpc_id = "vpc-0d8eb46653bd7e4e9"
+  vpc_id = aws_vpc.two_tier_stg_vpc.id
 }
 
 resource "aws_security_group" "two_tier_stg_all_sg" {
@@ -386,7 +380,7 @@ resource "aws_security_group" "two_tier_stg_all_sg" {
     Name = "twotier-all-sg"
   }
 
-  vpc_id = "vpc-0d8eb46653bd7e4e9"
+  vpc_id = aws_vpc.two_tier_stg_vpc.id
 }
 
 resource "aws_security_group" "two_tier_stg_ecs_sg" {
@@ -418,34 +412,31 @@ resource "aws_security_group" "two_tier_stg_ecs_sg" {
     Name = "twotier-ecs-sg"
   }
 
-  vpc_id = "vpc-0d8eb46653bd7e4e9"
+  vpc_id = aws_vpc.two_tier_stg_vpc.id
 }
 
 # INTERNET GATEWAY
 resource "aws_internet_gateway" "two_tier_stg_igw" {
-  region = "ap-southeast-1"
   tags = {
     "Name" = "two-tier-igw"
   }
   tags_all = {
     "Name" = "two-tier-igw"
   }
-  vpc_id = "vpc-0d8eb46653bd7e4e9"
+  vpc_id = aws_vpc.two_tier_stg_vpc.id
 }
 
 # ROUTE TABLES
 resource "aws_route_table" "two_tier_stg_default_rtb" {
   propagating_vgws = []
-  region           = "ap-southeast-1"
   route            = []
   tags             = {}
   tags_all         = {}
-  vpc_id           = "vpc-0d8eb46653bd7e4e9"
+  vpc_id           = aws_vpc.two_tier_stg_vpc.id
 }
 
 resource "aws_route_table" "two_tier_stg_rtb_public" {
   propagating_vgws = []
-  region           = "ap-southeast-1"
   route = [
     {
       carrier_gateway_id         = null
@@ -453,7 +444,7 @@ resource "aws_route_table" "two_tier_stg_rtb_public" {
       core_network_arn           = null
       destination_prefix_list_id = null
       egress_only_gateway_id     = null
-      gateway_id                 = "igw-0b211e3e7afaf01e0"
+      gateway_id                 = aws_internet_gateway.two_tier_stg_igw.id
       ipv6_cidr_block            = null
       local_gateway_id           = null
       nat_gateway_id             = null
@@ -469,12 +460,11 @@ resource "aws_route_table" "two_tier_stg_rtb_public" {
   tags_all = {
     "Name" = "two-tier-rtb-public"
   }
-  vpc_id = "vpc-0d8eb46653bd7e4e9"
+  vpc_id = aws_vpc.two_tier_stg_vpc.id
 }
 
 resource "aws_route_table" "two_tier_stg_rtb_private" {
   propagating_vgws = []
-  region           = "ap-southeast-1"
   route            = []
   tags = {
     "Name" = "two-tier-rtb-private1-ap-southeast-1a"
@@ -482,13 +472,12 @@ resource "aws_route_table" "two_tier_stg_rtb_private" {
   tags_all = {
     "Name" = "two-tier-rtb-private1-ap-southeast-1a"
   }
-  vpc_id = "vpc-0d8eb46653bd7e4e9"
+  vpc_id = aws_vpc.two_tier_stg_vpc.id
 }
 
 # ECS
 resource "aws_ecs_cluster" "two_tier_stg_ecs_cluster" {
   name     = "TwoTierCluster"
-  region   = "ap-southeast-1"
   tags     = {}
   tags_all = {}
 
@@ -502,7 +491,6 @@ resource "aws_ecs_cluster" "two_tier_stg_ecs_cluster" {
 resource "aws_ecr_repository" "two_tier_stg_fe" {
   image_tag_mutability = "MUTABLE"
   name                 = "ecs-prac/fe"
-  region               = "ap-southeast-1"
   tags                 = {}
   tags_all             = {}
 
@@ -519,7 +507,6 @@ resource "aws_ecr_repository" "two_tier_stg_fe" {
 resource "aws_ecr_repository" "two_tier_stg_be" {
   image_tag_mutability = "MUTABLE"
   name                 = "ecs-prac/be"
-  region               = "ap-southeast-1"
   tags                 = {}
   tags_all             = {}
 
