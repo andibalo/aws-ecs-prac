@@ -1,5 +1,5 @@
 # VPC
-resource "aws_vpc" "two_tier_stg_vpc" {
+resource "aws_vpc" "vpc" {
   assign_generated_ipv6_cidr_block     = false
   cidr_block                           = "12.0.0.0/16"
   enable_dns_hostnames                 = true
@@ -10,17 +10,16 @@ resource "aws_vpc" "two_tier_stg_vpc" {
   ipv6_cidr_block                      = null
   ipv6_cidr_block_network_border_group = null
   ipv6_ipam_pool_id                    = null
-  region                               = "ap-southeast-1"
   tags = {
-    "Name" = "two-tier-vpc"
+    "Name" = "${var.app_name}-${var.environment}-vpc"
   }
   tags_all = {
-    "Name" = "two-tier-vpc"
+    "Name" = "${var.app_name}-${var.environment}-vpc"
   }
 }
 
 # SUBNETS
-resource "aws_subnet" "two_tier_stg_public_subnet_1a" {
+resource "aws_subnet" "public_1a" {
   assign_ipv6_address_on_creation                = false
   availability_zone                              = "ap-southeast-1a"
   cidr_block                                     = "12.0.0.0/20"
@@ -34,17 +33,16 @@ resource "aws_subnet" "two_tier_stg_public_subnet_1a" {
   map_public_ip_on_launch                        = false
   outpost_arn                                    = null
   private_dns_hostname_type_on_launch            = "ip-name"
-  region                                         = "ap-southeast-1"
   tags = {
-    "Name" = "two-tier-subnet-public1-ap-southeast-1a"
+    "Name" = "${var.app_name}-${var.environment}-subnet-public-1a"
   }
   tags_all = {
-    "Name" = "two-tier-subnet-public1-ap-southeast-1a"
+    "Name" = "${var.app_name}-${var.environment}-subnet-public-1a"
   }
-  vpc_id = aws_vpc.two_tier_stg_vpc.id
+  vpc_id = aws_vpc.vpc.id
 }
 
-resource "aws_subnet" "two_tier_stg_public_subnet_1b" {
+resource "aws_subnet" "public_1b" {
   assign_ipv6_address_on_creation                = false
   availability_zone                              = "ap-southeast-1b"
   cidr_block                                     = "12.0.16.0/20"
@@ -58,17 +56,16 @@ resource "aws_subnet" "two_tier_stg_public_subnet_1b" {
   map_public_ip_on_launch                        = false
   outpost_arn                                    = null
   private_dns_hostname_type_on_launch            = "ip-name"
-  region                                         = "ap-southeast-1"
   tags = {
-    "Name" = "two-tier-subnet-public1-ap-southeast-1b"
+    "Name" = "${var.app_name}-${var.environment}-subnet-public-1b"
   }
   tags_all = {
-    "Name" = "two-tier-subnet-public1-ap-southeast-1b"
+    "Name" = "${var.app_name}-${var.environment}-subnet-public-1b"
   }
-  vpc_id = aws_vpc.two_tier_stg_vpc.id
+  vpc_id = aws_vpc.vpc.id
 }
 
-resource "aws_subnet" "two_tier_stg_private_subnet_app_1a" {
+resource "aws_subnet" "private_app_1a" {
   assign_ipv6_address_on_creation                = false
   availability_zone                              = "ap-southeast-1a"
   cidr_block                                     = "12.0.128.0/20"
@@ -82,17 +79,16 @@ resource "aws_subnet" "two_tier_stg_private_subnet_app_1a" {
   map_public_ip_on_launch                        = false
   outpost_arn                                    = null
   private_dns_hostname_type_on_launch            = "ip-name"
-  region                                         = "ap-southeast-1"
   tags = {
-    "Name" = "two-tier-subnet-private-app-ap-southeast-1a"
+    "Name" = "${var.app_name}-${var.environment}-subnet-private-app-1a"
   }
   tags_all = {
-    "Name" = "two-tier-subnet-private-app-ap-southeast-1a"
+    "Name" = "${var.app_name}-${var.environment}-subnet-private-app-1a"
   }
-  vpc_id = aws_vpc.two_tier_stg_vpc.id
+  vpc_id = aws_vpc.vpc.id
 }
 
-resource "aws_subnet" "two_tier_stg_private_subnet_db_1a" {
+resource "aws_subnet" "private_db_1a" {
   assign_ipv6_address_on_creation                = "false"
   cidr_block                                     = "12.0.144.0/20"
   enable_dns64                                   = "false"
@@ -101,19 +97,18 @@ resource "aws_subnet" "two_tier_stg_private_subnet_db_1a" {
   ipv6_native                                    = "false"
   map_public_ip_on_launch                        = "false"
   private_dns_hostname_type_on_launch            = "ip-name"
-  region                                         = "ap-southeast-1"
   tags = {
-    Name = "two-tier-subnet-private-db-ap-southeast-1a"
+    Name = "${var.app_name}-${var.environment}-subnet-private-db-1a"
   }
 
   tags_all = {
-    Name = "two-tier-subnet-private-db-ap-southeast-1a"
+    Name = "${var.app_name}-${var.environment}-subnet-private-db-1a"
   }
 
-  vpc_id = aws_vpc.two_tier_stg_vpc.id
+  vpc_id = aws_vpc.vpc.id
 }
 
-resource "aws_subnet" "two_tier_stg_private_subnet_db_1b" {
+resource "aws_subnet" "private_db_1b" {
   assign_ipv6_address_on_creation                = "false"
   cidr_block                                     = "12.0.160.0/20"
   enable_dns64                                   = "false"
@@ -122,43 +117,20 @@ resource "aws_subnet" "two_tier_stg_private_subnet_db_1b" {
   ipv6_native                                    = "false"
   map_public_ip_on_launch                        = "false"
   private_dns_hostname_type_on_launch            = "ip-name"
-  region                                         = "ap-southeast-1"
   tags = {
-    Name = "two-tier-subnet-private-db-ap-southeast-1b"
+    Name = "${var.app_name}-${var.environment}-subnet-private-db-1b"
   }
 
   tags_all = {
-    Name = "two-tier-subnet-private-db-ap-southeast-1b"
+    Name = "${var.app_name}-${var.environment}-subnet-private-db-1b"
   }
 
-  vpc_id = aws_vpc.two_tier_stg_vpc.id
+  vpc_id = aws_vpc.vpc.id
 }
 
 # SECURITY GROUPS
-resource "aws_security_group" "two_tier_stg_default_sg" {
-  description = "default VPC security group"
-
-  egress {
-    cidr_blocks = ["0.0.0.0/0"]
-    from_port   = "0"
-    protocol    = "-1"
-    self        = "false"
-    to_port     = "0"
-  }
-
-  ingress {
-    from_port = "0"
-    protocol  = "-1"
-    self      = "true"
-    to_port   = "0"
-  }
-
-  name   = "default"
-  vpc_id = aws_vpc.two_tier_stg_vpc.id
-}
-
-resource "aws_security_group" "two_tier_stg_alb_sg" {
-  description = "two-tier-alb-sg"
+resource "aws_security_group" "alb" {
+  description = "${var.app_name}-${var.environment}-alb-sg"
 
   egress {
     cidr_blocks = ["0.0.0.0/0"]
@@ -184,21 +156,21 @@ resource "aws_security_group" "two_tier_stg_alb_sg" {
     to_port     = "80"
   }
 
-  name = "two-tier-alb-sg"
+  name = "${var.app_name}-${var.environment}-alb-sg"
 
   tags = {
-    Name = "two-tier-alb-sg"
+    Name = "${var.app_name}-${var.environment}-alb-sg"
   }
 
   tags_all = {
-    Name = "two-tier-alb-sg"
+    Name = "${var.app_name}-${var.environment}-alb-sg"
   }
 
-  vpc_id = aws_vpc.two_tier_stg_vpc.id
+  vpc_id = aws_vpc.vpc.id
 }
 
-resource "aws_security_group" "two_tier_stg_app_sg" {
-  description = "two-tier-app-sg"
+resource "aws_security_group" "app" {
+  description = "${var.app_name}-${var.environment}-app-sg"
 
   egress {
     cidr_blocks = ["0.0.0.0/0"]
@@ -211,7 +183,7 @@ resource "aws_security_group" "two_tier_stg_app_sg" {
   ingress {
     from_port       = "22"
     protocol        = "tcp"
-    security_groups = ["${aws_security_group.two_tier_stg_open_vpn_sg.id}"]
+    security_groups = ["${aws_security_group.open_vpn.id}"]
     self            = "false"
     to_port         = "22"
   }
@@ -219,7 +191,7 @@ resource "aws_security_group" "two_tier_stg_app_sg" {
   ingress {
     from_port       = "3000"
     protocol        = "tcp"
-    security_groups = ["${aws_security_group.two_tier_stg_open_vpn_sg.id}"]
+    security_groups = ["${aws_security_group.open_vpn.id}"]
     self            = "false"
     to_port         = "3000"
   }
@@ -227,7 +199,7 @@ resource "aws_security_group" "two_tier_stg_app_sg" {
   ingress {
     from_port       = "443"
     protocol        = "tcp"
-    security_groups = ["${aws_security_group.two_tier_stg_alb_sg.id}"]
+    security_groups = ["${aws_security_group.alb.id}"]
     self            = "false"
     to_port         = "443"
   }
@@ -235,7 +207,7 @@ resource "aws_security_group" "two_tier_stg_app_sg" {
   ingress {
     from_port       = "80"
     protocol        = "tcp"
-    security_groups = ["${aws_security_group.two_tier_stg_alb_sg.id}"]
+    security_groups = ["${aws_security_group.alb.id}"]
     self            = "false"
     to_port         = "80"
   }
@@ -243,25 +215,25 @@ resource "aws_security_group" "two_tier_stg_app_sg" {
   ingress {
     from_port       = "8080"
     protocol        = "tcp"
-    security_groups = ["${aws_security_group.two_tier_stg_alb_sg.id}", "${aws_security_group.two_tier_stg_open_vpn_sg.id}"]
+    security_groups = ["${aws_security_group.alb.id}", "${aws_security_group.open_vpn.id}"]
     self            = "false"
     to_port         = "8080"
   }
 
-  name = "two-tier-app-sg"
+  name = "${var.app_name}-${var.environment}-app-sg"
 
   tags = {
-    Name = "two-tier-app-sg"
+    Name = "${var.app_name}-${var.environment}-app-sg"
   }
 
   tags_all = {
-    Name = "two-tier-app-sg"
+    Name = "${var.app_name}-${var.environment}-app-sg"
   }
 
-  vpc_id = aws_vpc.two_tier_stg_vpc.id
+  vpc_id = aws_vpc.vpc.id
 }
 
-resource "aws_security_group" "two_tier_stg_open_vpn_sg" {
+resource "aws_security_group" "open_vpn" {
   description = "open vpn sg"
 
   egress {
@@ -312,21 +284,21 @@ resource "aws_security_group" "two_tier_stg_open_vpn_sg" {
     to_port     = "945"
   }
 
-  name = "two-tier-open-vpn-sg"
+  name = "${var.app_name}-${var.environment}-open-vpn-sg"
 
   tags = {
-    Name = "two-tier-open-vpn-sg"
+    Name = "${var.app_name}-${var.environment}-open-vpn-sg"
   }
 
   tags_all = {
-    Name = "two-tier-open-vpn-sg"
+    Name = "${var.app_name}-${var.environment}-open-vpn-sg"
   }
 
-  vpc_id = aws_vpc.two_tier_stg_vpc.id
+  vpc_id = aws_vpc.vpc.id
 }
 
-resource "aws_security_group" "two_tier_stg_rds_sg" {
-  description = "two-tier-rds-sg"
+resource "aws_security_group" "rds" {
+  description = "${var.app_name}-${var.environment}-rds-sg"
 
   egress {
     cidr_blocks = ["0.0.0.0/0"]
@@ -339,26 +311,26 @@ resource "aws_security_group" "two_tier_stg_rds_sg" {
   ingress {
     from_port       = "3306"
     protocol        = "tcp"
-    security_groups = ["${aws_security_group.two_tier_stg_app_sg.id}", "${aws_security_group.two_tier_stg_open_vpn_sg.id}", "${aws_security_group.two_tier_stg_ecs_sg.id}"]
+    security_groups = ["${aws_security_group.app.id}", "${aws_security_group.open_vpn.id}", "${aws_security_group.ecs.id}"]
     self            = "false"
     to_port         = "3306"
   }
 
-  name = "two-tier-rds-sg"
+  name = "${var.app_name}-${var.environment}-rds-sg"
 
   tags = {
-    Name = "two-tier-rds-sg"
+    Name = "${var.app_name}-${var.environment}-rds-sg"
   }
 
   tags_all = {
-    Name = "two-tier-rds-sg"
+    Name = "${var.app_name}-${var.environment}-rds-sg"
   }
 
-  vpc_id = aws_vpc.two_tier_stg_vpc.id
+  vpc_id = aws_vpc.vpc.id
 }
 
-resource "aws_security_group" "two_tier_stg_all_sg" {
-  description = "twotier-all-sg"
+resource "aws_security_group" "all" {
+  description = "${var.app_name}-${var.environment}-all-sg"
 
   egress {
     cidr_blocks = ["0.0.0.0/0"]
@@ -376,21 +348,21 @@ resource "aws_security_group" "two_tier_stg_all_sg" {
     to_port     = "0"
   }
 
-  name = "twotier-all-sg"
+  name = "${var.app_name}-${var.environment}-all-sg"
 
   tags = {
-    Name = "twotier-all-sg"
+    Name = "${var.app_name}-${var.environment}-all-sg"
   }
 
   tags_all = {
-    Name = "twotier-all-sg"
+    Name = "${var.app_name}-${var.environment}-all-sg"
   }
 
-  vpc_id = aws_vpc.two_tier_stg_vpc.id
+  vpc_id = aws_vpc.vpc.id
 }
 
-resource "aws_security_group" "two_tier_stg_ecs_sg" {
-  description = "twotier-ecs-sg"
+resource "aws_security_group" "ecs" {
+  description = "${var.app_name}-${var.environment}-ecs-sg"
 
   egress {
     cidr_blocks = ["0.0.0.0/0"]
@@ -403,49 +375,38 @@ resource "aws_security_group" "two_tier_stg_ecs_sg" {
   ingress {
     from_port       = "0"
     protocol        = "-1"
-    security_groups = ["${aws_security_group.two_tier_stg_alb_sg.id}"]
+    security_groups = ["${aws_security_group.alb.id}"]
     self            = "false"
     to_port         = "0"
   }
 
-  name = "twotier-ecs-sg"
+  name = "${var.app_name}-${var.environment}-ecs-sg"
 
   tags = {
-    Name = "twotier-ecs-sg"
+    Name = "${var.app_name}-${var.environment}-ecs-sg"
   }
 
   tags_all = {
-    Name = "twotier-ecs-sg"
+    Name = "${var.app_name}-${var.environment}-ecs-sg"
   }
 
-  vpc_id = aws_vpc.two_tier_stg_vpc.id
+  vpc_id = aws_vpc.vpc.id
 }
 
 # INTERNET GATEWAY
-resource "aws_internet_gateway" "two_tier_stg_igw" {
-  region = "ap-southeast-1"
+resource "aws_internet_gateway" "igw" {
   tags = {
-    "Name" = "two-tier-igw"
+    "Name" = "${var.app_name}-${var.environment}-igw"
   }
   tags_all = {
-    "Name" = "two-tier-igw"
+    "Name" = "${var.app_name}-${var.environment}-igw"
   }
-  vpc_id = aws_vpc.two_tier_stg_vpc.id
+  vpc_id = aws_vpc.vpc.id
 }
 
 # ROUTE TABLES
-resource "aws_route_table" "two_tier_stg_default_rtb" {
+resource "aws_route_table" "public" {
   propagating_vgws = []
-  region           = "ap-southeast-1"
-  route            = []
-  tags             = {}
-  tags_all         = {}
-  vpc_id           = aws_vpc.two_tier_stg_vpc.id
-}
-
-resource "aws_route_table" "two_tier_stg_rtb_public" {
-  propagating_vgws = []
-  region           = "ap-southeast-1"
   route = [
     {
       carrier_gateway_id         = null
@@ -453,7 +414,7 @@ resource "aws_route_table" "two_tier_stg_rtb_public" {
       core_network_arn           = null
       destination_prefix_list_id = null
       egress_only_gateway_id     = null
-      gateway_id                 = aws_internet_gateway.two_tier_stg_igw.id
+      gateway_id                 = aws_internet_gateway.igw.id
       ipv6_cidr_block            = null
       local_gateway_id           = null
       nat_gateway_id             = null
@@ -464,31 +425,29 @@ resource "aws_route_table" "two_tier_stg_rtb_public" {
     },
   ]
   tags = {
-    "Name" = "two-tier-rtb-public"
+    "Name" = "${var.app_name}-${var.environment}-rtb-public"
   }
   tags_all = {
-    "Name" = "two-tier-rtb-public"
+    "Name" = "${var.app_name}-${var.environment}-rtb-public"
   }
-  vpc_id = aws_vpc.two_tier_stg_vpc.id
+  vpc_id = aws_vpc.vpc.id
 }
 
-resource "aws_route_table" "two_tier_stg_rtb_private" {
+resource "aws_route_table" "private" {
   propagating_vgws = []
-  region           = "ap-southeast-1"
   route            = []
   tags = {
-    "Name" = "two-tier-rtb-private1-ap-southeast-1a"
+    "Name" = "${var.app_name}-${var.environment}-rtb-private"
   }
   tags_all = {
-    "Name" = "two-tier-rtb-private1-ap-southeast-1a"
+    "Name" = "${var.app_name}-${var.environment}-rtb-private"
   }
-  vpc_id = aws_vpc.two_tier_stg_vpc.id
+  vpc_id = aws_vpc.vpc.id
 }
 
 # ECS
-resource "aws_ecs_cluster" "two_tier_stg_ecs_cluster" {
-  name     = "TwoTierCluster"
-  region   = "ap-southeast-1"
+resource "aws_ecs_cluster" "ecs" {
+  name     = "${var.app_name}-${var.environment}"
   tags     = {}
   tags_all = {}
 
@@ -499,10 +458,9 @@ resource "aws_ecs_cluster" "two_tier_stg_ecs_cluster" {
 }
 
 # ECR
-resource "aws_ecr_repository" "two_tier_stg_fe" {
+resource "aws_ecr_repository" "frontend" {
   image_tag_mutability = "MUTABLE"
   name                 = "ecs-prac/fe"
-  region               = "ap-southeast-1"
   tags                 = {}
   tags_all             = {}
 
@@ -516,10 +474,9 @@ resource "aws_ecr_repository" "two_tier_stg_fe" {
   }
 }
 
-resource "aws_ecr_repository" "two_tier_stg_be" {
+resource "aws_ecr_repository" "backend" {
   image_tag_mutability = "MUTABLE"
   name                 = "ecs-prac/be"
-  region               = "ap-southeast-1"
   tags                 = {}
   tags_all             = {}
 
@@ -534,12 +491,11 @@ resource "aws_ecr_repository" "two_tier_stg_be" {
 }
 
 # ACM
-resource "aws_acm_certificate" "two_tier_stg_dns_cert" {
+resource "aws_acm_certificate" "dns_cert" {
   certificate_authority_arn = null
   domain_name               = "andisandbox.my.id"
   early_renewal_duration    = null
   key_algorithm             = "RSA_2048"
-  region                    = "ap-southeast-1"
   subject_alternative_names = [
     "*.andisandbox.my.id",
     "andisandbox.my.id",
@@ -555,23 +511,22 @@ resource "aws_acm_certificate" "two_tier_stg_dns_cert" {
 }
 
 # TARGET GROUPS
-resource "aws_lb_target_group" "two_tier_stg_ecs_be_tg" {
+resource "aws_lb_target_group" "ecs_be" {
   deregistration_delay              = "300"
   ip_address_type                   = "ipv4"
   load_balancing_algorithm_type     = "round_robin"
   load_balancing_anomaly_mitigation = "off"
   load_balancing_cross_zone_enabled = "use_load_balancer_configuration"
-  name                              = "twotier-ecs-be-tg"
+  name                              = "${var.app_name}-${var.environment}-ecs-be-tg"
   name_prefix                       = null
   port                              = 8080
   protocol                          = "HTTP"
   protocol_version                  = "HTTP1"
-  region                            = "ap-southeast-1"
   slow_start                        = 0
   tags                              = {}
   tags_all                          = {}
   target_type                       = "ip"
-  vpc_id                            = aws_vpc.two_tier_stg_vpc.id
+  vpc_id                            = aws_vpc.vpc.id
 
   health_check {
     enabled             = true
@@ -604,51 +559,132 @@ resource "aws_lb_target_group" "two_tier_stg_ecs_be_tg" {
   }
 }
 
-resource "aws_lb_target_group" "two_tier_stg_ecs_fe_tg" {
-    deregistration_delay              = "300"
-    ip_address_type                   = "ipv4"
-    load_balancing_algorithm_type     = "round_robin"
-    load_balancing_anomaly_mitigation = "off"
-    load_balancing_cross_zone_enabled = "use_load_balancer_configuration"
-    name                              = "twotier-ecs-fe-tg"
-    name_prefix                       = null
-    port                              = 80
-    protocol                          = "HTTP"
-    protocol_version                  = "HTTP1"
-    region                            = "ap-southeast-1"
-    slow_start                        = 0
-    tags                              = {}
-    tags_all                          = {}
-    target_type                       = "ip"
-    vpc_id                            = aws_vpc.two_tier_stg_vpc.id
+resource "aws_lb_target_group" "ecs_fe" {
+  deregistration_delay              = "300"
+  ip_address_type                   = "ipv4"
+  load_balancing_algorithm_type     = "round_robin"
+  load_balancing_anomaly_mitigation = "off"
+  load_balancing_cross_zone_enabled = "use_load_balancer_configuration"
+  name                              = "${var.app_name}-${var.environment}-ecs-fe-tg"
+  name_prefix                       = null
+  port                              = 80
+  protocol                          = "HTTP"
+  protocol_version                  = "HTTP1"
+  slow_start                        = 0
+  tags                              = {}
+  tags_all                          = {}
+  target_type                       = "ip"
+  vpc_id                            = aws_vpc.vpc.id
 
-    health_check {
-        enabled             = true
-        healthy_threshold   = 5
-        interval            = 30
-        matcher             = "200"
-        path                = "/"
-        port                = "traffic-port"
-        protocol            = "HTTP"
-        timeout             = 5
-        unhealthy_threshold = 2
-    }
+  health_check {
+    enabled             = true
+    healthy_threshold   = 5
+    interval            = 30
+    matcher             = "200"
+    path                = "/"
+    port                = "traffic-port"
+    protocol            = "HTTP"
+    timeout             = 5
+    unhealthy_threshold = 2
+  }
 
-    stickiness {
-        cookie_duration = 86400
-        cookie_name     = null
-        enabled         = false
-        type            = "lb_cookie"
-    }
+  stickiness {
+    cookie_duration = 86400
+    cookie_name     = null
+    enabled         = false
+    type            = "lb_cookie"
+  }
 
-    target_group_health {
-        dns_failover {
-            minimum_healthy_targets_count      = "1"
-            minimum_healthy_targets_percentage = "off"
-        }
-        unhealthy_state_routing {
-            minimum_healthy_targets_count      = 1
-            minimum_healthy_targets_percentage = "off"
-        }
+  target_group_health {
+    dns_failover {
+      minimum_healthy_targets_count      = "1"
+      minimum_healthy_targets_percentage = "off"
     }
+    unhealthy_state_routing {
+      minimum_healthy_targets_count      = 1
+      minimum_healthy_targets_percentage = "off"
+    }
+  }
+}
+
+# EC2
+resource "aws_instance" "open_vpn" {
+  ami                                  = "ami-0933f1385008d33c4"
+  associate_public_ip_address          = true
+  availability_zone                    = "ap-southeast-1a"
+  disable_api_stop                     = false
+  disable_api_termination              = false
+  ebs_optimized                        = true
+  get_password_data                    = false
+  hibernation                          = false
+  instance_initiated_shutdown_behavior = "stop"
+  instance_type                        = "t3.micro"
+  key_name                             = aws_key_pair.ec2.key_name
+  source_dest_check                    = true
+  spot_instance_request_id             = null
+  subnet_id                            = aws_subnet.public_1b.id
+  tags = {
+    "Name" = "open-vpn"
+  }
+  tags_all = {
+    "Name" = "open-vpn"
+  }
+  tenancy = "default"
+  vpc_security_group_ids = [
+    aws_security_group.open_vpn.id,
+  ]
+
+  capacity_reservation_specification {
+    capacity_reservation_preference = "open"
+  }
+
+  cpu_options {
+    amd_sev_snp      = null
+    core_count       = 1
+    threads_per_core = 2
+  }
+
+  credit_specification {
+    cpu_credits = "unlimited"
+  }
+
+  enclave_options {
+    enabled = false
+  }
+
+  maintenance_options {
+    auto_recovery = "default"
+  }
+
+  metadata_options {
+    http_endpoint               = "enabled"
+    http_protocol_ipv6          = "disabled"
+    http_put_response_hop_limit = 2
+    http_tokens                 = "required"
+    instance_metadata_tags      = "disabled"
+  }
+
+  private_dns_name_options {
+    enable_resource_name_dns_a_record    = false
+    enable_resource_name_dns_aaaa_record = false
+    hostname_type                        = "ip-name"
+  }
+
+  root_block_device {
+    delete_on_termination = true
+    encrypted             = false
+    iops                  = 3000
+    kms_key_id            = null
+    tags                  = {}
+    tags_all              = {}
+    throughput            = 125
+    volume_size           = 8
+    volume_type           = "gp3"
+  }
+}
+
+# Key Pair
+resource "aws_key_pair" "ec2" {
+  key_name   = "${var.app_name}-${var.environment}"
+  public_key = var.ec2_ssh_public_key
 }

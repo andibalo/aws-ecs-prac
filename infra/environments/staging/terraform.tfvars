@@ -1,0 +1,1 @@
+ec2_ssh_public_key = "<your-ssh-public-key>"

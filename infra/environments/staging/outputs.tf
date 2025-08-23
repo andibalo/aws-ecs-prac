@@ -1,27 +1,23 @@
-output "aws_security_group--two_tier_stg_default_sg" {
-  value = aws_security_group.two_tier_stg_default_sg.id
+output "aws_security_group--alb_sg" {
+  value = aws_security_group.alb.id
 }
 
-output "aws_security_group--two_tier_stg_alb_sg" {
-  value = aws_security_group.two_tier_stg_alb_sg.id
+output "aws_security_group--app_sg" {
+  value = aws_security_group.app.id
 }
 
-output "aws_security_group--two_tier_stg_app_sg" {
-  value = aws_security_group.two_tier_stg_app_sg.id
+output "aws_security_group--open_vpn_sg" {
+  value = aws_security_group.open_vpn.id
 }
 
-output "aws_security_group--two_tier_stg_open_vpn_sg" {
-  value = aws_security_group.two_tier_stg_open_vpn_sg.id
+output "aws_security_group--rds_sg" {
+  value = aws_security_group.rds.id
 }
 
-output "aws_security_group--two_tier_stg_rds_sg" {
-  value = aws_security_group.two_tier_stg_rds_sg.id
+output "aws_security_group--all_sg" {
+  value = aws_security_group.all.id
 }
 
-output "aws_security_group--two_tier_stg_all_sg" {
-  value = aws_security_group.two_tier_stg_all_sg.id
-}
-
-output "aws_security_group--two_tier_stg_ecs_sg" {
-  value = aws_security_group.two_tier_stg_ecs_sg.id
+output "aws_security_group--ecs_sg" {
+  value = aws_security_group.ecs.id
 }
