@@ -9,6 +9,11 @@ on:
       - 'prod-fe-*'
 
 env:
+  FE_CONTAINER_NAME: ${{ vars.FE_CONTAINER_NAME }}  
+  FE_ECS_SERVICE: ${{ vars.FE_ECS_SERVICE }} 
+  BE_CONTAINER_NAME: ${{ vars.BE_CONTAINER_NAME }} 
+  BE_ECS_SERVICE: ${{ vars.BE_ECS_SERVICE }} 
+  ECS_CLUSTER: ${{ vars.ECS_CLUSTER }} 
   AWS_REGION: ${{ vars.AWS_REGION }}      
   FE_ECR_REPO_NAME: ecs-prac/fe
   BE_ECR_REPO_NAME: ecs-prac/be
@@ -47,10 +52,33 @@ jobs:
         run: echo "VERSION=${{ github.ref_name }}" >> $GITHUB_ENV
 
       - name: Build the Frontend Docker image
-        run: docker build -t ${{ env.ECR_REGISTRY }}/${{ env.FE_ECR_REPO_NAME }}:${{ env.VERSION }} ./frontend
+        id: build-image
+        run: |
+          docker build -t ${{ env.ECR_REGISTRY }}/${{ env.FE_ECR_REPO_NAME }}:${{ env.VERSION }} ./frontend
+          echo "image=${{ env.ECR_REGISTRY }}/${{ env.FE_ECR_REPO_NAME }}:${{ env.VERSION }}" >> $GITHUB_OUTPUT
 
       - name: Push the Frontend Docker image
         run: docker push ${{ env.ECR_REGISTRY }}/${{ env.FE_ECR_REPO_NAME }}:${{ env.VERSION }}
+
+      - name: Fill in the new image ID in the Amazon ECS task definition
+        id: task-def
+        uses: aws-actions/amazon-ecs-render-task-definition@v1
+        with:
+          task-definition: ./infra/fe-task-definition.json
+          container-name: ${{ env.FE_CONTAINER_NAME }}
+          image: ${{ steps.build-image.outputs.image }}
+
+      - name: Log task definition
+        run: cat ${{ steps.task-def.outputs.task-definition }}
+
+      - name: Deploy Amazon ECS task definition
+        uses: aws-actions/amazon-ecs-deploy-task-definition@v2
+        with:
+          task-definition: ${{ steps.task-def.outputs.task-definition }}
+          service: ${{ env.FE_ECS_SERVICE }}
+          cluster: ${{ env.ECS_CLUSTER }}
+          wait-for-service-stability: true
+          force-new-deployment: true
 
   deploy_be_stg:
     name: Deploy Backend to ECS
@@ -82,7 +110,29 @@ jobs:
         run: echo "VERSION=${{ github.ref_name }}" >> $GITHUB_ENV
 
       - name: Build the Backend Docker image
-        run: docker build -t ${{ env.ECR_REGISTRY }}/${{ env.BE_ECR_REPO_NAME }}:${{ env.VERSION }} ./backend
+        run: |
+          docker build -t ${{ env.ECR_REGISTRY }}/${{ env.BE_ECR_REPO_NAME }}:${{ env.VERSION }} ./backend
+          echo "image=${{ env.ECR_REGISTRY }}/${{ env.BE_ECR_REPO_NAME }}:${{ env.VERSION }}" >> $GITHUB_OUTPUT
 
       - name: Push the Backend Docker image
         run: docker push ${{ env.ECR_REGISTRY }}/${{ env.BE_ECR_REPO_NAME }}:${{ env.VERSION }}
+
+      - name: Fill in the new image ID in the Amazon ECS task definition
+        id: task-def
+        uses: aws-actions/amazon-ecs-render-task-definition@v1
+        with:
+          task-definition: ./infra/be-task-definition.json
+          container-name: ${{ env.BE_CONTAINER_NAME }}
+          image: ${{ steps.build-image.outputs.image }}
+
+      - name: Log task definition
+        run: cat ${{ steps.task-def.outputs.task-definition }}
+
+      - name: Deploy Amazon ECS task definition
+        uses: aws-actions/amazon-ecs-deploy-task-definition@v2
+        with:
+          task-definition: ${{ steps.task-def.outputs.task-definition }}
+          service: ${{ env.BE_ECS_SERVICE }}
+          cluster: ${{ env.ECS_CLUSTER }}
+          wait-for-service-stability: true
+          force-new-deployment: true
