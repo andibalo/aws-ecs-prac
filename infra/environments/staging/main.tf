@@ -445,6 +445,31 @@ resource "aws_route_table" "private" {
   vpc_id = aws_vpc.vpc.id
 }
 
+resource "aws_route_table_association" "public_1a_subnet_association" {
+  subnet_id      = aws_subnet.public_1a.id
+  route_table_id = aws_route_table.public.id
+}
+
+resource "aws_route_table_association" "public_1b_subnet_association" {
+  subnet_id      = aws_subnet.public_1b.id
+  route_table_id = aws_route_table.public.id
+}
+
+resource "aws_route_table_association" "private_app_1a_subnet_association" {
+  subnet_id      = aws_subnet.private_app_1a.id
+  route_table_id = aws_route_table.private.id
+}
+
+resource "aws_route_table_association" "private_db_1a_subnet_association" {
+  subnet_id      = aws_subnet.private_db_1a.id
+  route_table_id = aws_route_table.private.id
+}
+
+resource "aws_route_table_association" "private_db_1b_subnet_association" {
+  subnet_id      = aws_subnet.private_db_1b.id
+  route_table_id = aws_route_table.private.id
+}
+
 # ECS
 resource "aws_ecs_cluster" "ecs" {
   name     = "${var.app_name}-${var.environment}"
@@ -619,10 +644,12 @@ resource "aws_instance" "open_vpn" {
   hibernation                          = false
   instance_initiated_shutdown_behavior = "stop"
   instance_type                        = "t3.micro"
-  key_name                             = aws_key_pair.ec2.key_name
+  key_name                             = var.ec2_key_name
   source_dest_check                    = true
   spot_instance_request_id             = null
-  subnet_id                            = aws_subnet.public_1b.id
+  subnet_id                            = aws_subnet.public_1a.id
+
+  user_data = data.local_file.start_openvpn_sh.content
   tags = {
     "Name" = "open-vpn"
   }
@@ -681,10 +708,4 @@ resource "aws_instance" "open_vpn" {
     volume_size           = 8
     volume_type           = "gp3"
   }
-}
-
-# Key Pair
-resource "aws_key_pair" "ec2" {
-  key_name   = "${var.app_name}-${var.environment}"
-  public_key = var.ec2_ssh_public_key
 }

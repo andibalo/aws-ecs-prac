@@ -8,6 +8,6 @@ variable "environment" {
   default     = "staging"
 }
 
-variable "ec2_ssh_public_key" {
-  type        = string
+variable "ec2_key_name" {
+  type = string
 }
