@@ -13,9 +13,6 @@ resource "aws_vpc" "vpc" {
   tags = {
     "Name" = "${var.app_name}-${var.environment}-vpc"
   }
-  tags_all = {
-    "Name" = "${var.app_name}-${var.environment}-vpc"
-  }
 }
 
 # SUBNETS
@@ -34,9 +31,6 @@ resource "aws_subnet" "public_1a" {
   outpost_arn                                    = null
   private_dns_hostname_type_on_launch            = "ip-name"
   tags = {
-    "Name" = "${var.app_name}-${var.environment}-subnet-public-1a"
-  }
-  tags_all = {
     "Name" = "${var.app_name}-${var.environment}-subnet-public-1a"
   }
   vpc_id = aws_vpc.vpc.id
@@ -59,9 +53,6 @@ resource "aws_subnet" "public_1b" {
   tags = {
     "Name" = "${var.app_name}-${var.environment}-subnet-public-1b"
   }
-  tags_all = {
-    "Name" = "${var.app_name}-${var.environment}-subnet-public-1b"
-  }
   vpc_id = aws_vpc.vpc.id
 }
 
@@ -82,9 +73,6 @@ resource "aws_subnet" "private_app_1a" {
   tags = {
     "Name" = "${var.app_name}-${var.environment}-subnet-private-app-1a"
   }
-  tags_all = {
-    "Name" = "${var.app_name}-${var.environment}-subnet-private-app-1a"
-  }
   vpc_id = aws_vpc.vpc.id
 }
 
@@ -100,11 +88,6 @@ resource "aws_subnet" "private_db_1a" {
   tags = {
     Name = "${var.app_name}-${var.environment}-subnet-private-db-1a"
   }
-
-  tags_all = {
-    Name = "${var.app_name}-${var.environment}-subnet-private-db-1a"
-  }
-
   vpc_id = aws_vpc.vpc.id
 }
 
@@ -120,11 +103,6 @@ resource "aws_subnet" "private_db_1b" {
   tags = {
     Name = "${var.app_name}-${var.environment}-subnet-private-db-1b"
   }
-
-  tags_all = {
-    Name = "${var.app_name}-${var.environment}-subnet-private-db-1b"
-  }
-
   vpc_id = aws_vpc.vpc.id
 }
 
@@ -161,11 +139,6 @@ resource "aws_security_group" "alb" {
   tags = {
     Name = "${var.app_name}-${var.environment}-alb-sg"
   }
-
-  tags_all = {
-    Name = "${var.app_name}-${var.environment}-alb-sg"
-  }
-
   vpc_id = aws_vpc.vpc.id
 }
 
@@ -225,11 +198,6 @@ resource "aws_security_group" "app" {
   tags = {
     Name = "${var.app_name}-${var.environment}-app-sg"
   }
-
-  tags_all = {
-    Name = "${var.app_name}-${var.environment}-app-sg"
-  }
-
   vpc_id = aws_vpc.vpc.id
 }
 
@@ -289,11 +257,6 @@ resource "aws_security_group" "open_vpn" {
   tags = {
     Name = "${var.app_name}-${var.environment}-open-vpn-sg"
   }
-
-  tags_all = {
-    Name = "${var.app_name}-${var.environment}-open-vpn-sg"
-  }
-
   vpc_id = aws_vpc.vpc.id
 }
 
@@ -321,11 +284,6 @@ resource "aws_security_group" "rds" {
   tags = {
     Name = "${var.app_name}-${var.environment}-rds-sg"
   }
-
-  tags_all = {
-    Name = "${var.app_name}-${var.environment}-rds-sg"
-  }
-
   vpc_id = aws_vpc.vpc.id
 }
 
@@ -353,11 +311,6 @@ resource "aws_security_group" "all" {
   tags = {
     Name = "${var.app_name}-${var.environment}-all-sg"
   }
-
-  tags_all = {
-    Name = "${var.app_name}-${var.environment}-all-sg"
-  }
-
   vpc_id = aws_vpc.vpc.id
 }
 
@@ -385,20 +338,12 @@ resource "aws_security_group" "ecs" {
   tags = {
     Name = "${var.app_name}-${var.environment}-ecs-sg"
   }
-
-  tags_all = {
-    Name = "${var.app_name}-${var.environment}-ecs-sg"
-  }
-
   vpc_id = aws_vpc.vpc.id
 }
 
 # INTERNET GATEWAY
 resource "aws_internet_gateway" "igw" {
   tags = {
-    "Name" = "${var.app_name}-${var.environment}-igw"
-  }
-  tags_all = {
     "Name" = "${var.app_name}-${var.environment}-igw"
   }
   vpc_id = aws_vpc.vpc.id
@@ -427,9 +372,6 @@ resource "aws_route_table" "public" {
   tags = {
     "Name" = "${var.app_name}-${var.environment}-rtb-public"
   }
-  tags_all = {
-    "Name" = "${var.app_name}-${var.environment}-rtb-public"
-  }
   vpc_id = aws_vpc.vpc.id
 }
 
@@ -437,9 +379,6 @@ resource "aws_route_table" "private" {
   propagating_vgws = []
   route            = []
   tags = {
-    "Name" = "${var.app_name}-${var.environment}-rtb-private"
-  }
-  tags_all = {
     "Name" = "${var.app_name}-${var.environment}-rtb-private"
   }
   vpc_id = aws_vpc.vpc.id
@@ -472,9 +411,10 @@ resource "aws_route_table_association" "private_db_1b_subnet_association" {
 
 # ECS
 resource "aws_ecs_cluster" "ecs" {
-  name     = "${var.app_name}-${var.environment}"
-  tags     = {}
-  tags_all = {}
+  name = "${var.app_name}-${var.environment}"
+  tags = {
+    Name = "${var.app_name}-${var.environment}-ecs-cluster"
+  }
 
   setting {
     name  = "containerInsights"
@@ -485,9 +425,10 @@ resource "aws_ecs_cluster" "ecs" {
 # ECR
 resource "aws_ecr_repository" "frontend" {
   image_tag_mutability = "MUTABLE"
-  name                 = "ecs-prac/fe"
-  tags                 = {}
-  tags_all             = {}
+  name                 = var.frontend_ecr_name
+  tags = {
+    Name = "${var.app_name}-${var.environment}-ecr-fe"
+  }
 
   encryption_configuration {
     encryption_type = "AES256"
@@ -501,9 +442,10 @@ resource "aws_ecr_repository" "frontend" {
 
 resource "aws_ecr_repository" "backend" {
   image_tag_mutability = "MUTABLE"
-  name                 = "ecs-prac/be"
-  tags                 = {}
-  tags_all             = {}
+  name                 = var.backend_ecr_name
+  tags = {
+    Name = "${var.app_name}-${var.environment}-ecr-be"
+  }
 
   encryption_configuration {
     encryption_type = "AES256"
@@ -525,8 +467,6 @@ resource "aws_acm_certificate" "dns_cert" {
     "*.andisandbox.my.id",
     "andisandbox.my.id",
   ]
-  tags              = {}
-  tags_all          = {}
   validation_method = "DNS"
 
   options {
@@ -548,10 +488,11 @@ resource "aws_lb_target_group" "ecs_be" {
   protocol                          = "HTTP"
   protocol_version                  = "HTTP1"
   slow_start                        = 0
-  tags                              = {}
-  tags_all                          = {}
-  target_type                       = "ip"
-  vpc_id                            = aws_vpc.vpc.id
+  tags = {
+    Name = "${var.app_name}-${var.environment}-ecs-be-tg"
+  }
+  target_type = "ip"
+  vpc_id      = aws_vpc.vpc.id
 
   health_check {
     enabled             = true
@@ -596,10 +537,11 @@ resource "aws_lb_target_group" "ecs_fe" {
   protocol                          = "HTTP"
   protocol_version                  = "HTTP1"
   slow_start                        = 0
-  tags                              = {}
-  tags_all                          = {}
-  target_type                       = "ip"
-  vpc_id                            = aws_vpc.vpc.id
+  tags = {
+    Name = "${var.app_name}-${var.environment}-ecs-fe-tg"
+  }
+  target_type = "ip"
+  vpc_id      = aws_vpc.vpc.id
 
   health_check {
     enabled             = true
@@ -653,9 +595,6 @@ resource "aws_instance" "open_vpn" {
   tags = {
     "Name" = "open-vpn"
   }
-  tags_all = {
-    "Name" = "open-vpn"
-  }
   tenancy = "default"
   vpc_security_group_ids = [
     aws_security_group.open_vpn.id,
@@ -707,5 +646,24 @@ resource "aws_instance" "open_vpn" {
     throughput            = 125
     volume_size           = 8
     volume_type           = "gp3"
+  }
+}
+
+# S3
+resource "aws_s3_bucket" "tf_state" {
+  bucket = local.tf_state_bucket_name
+  tags = {
+    Name = "${var.app_name}-${var.environment}-tf-state-bucket"
+  }
+
+  lifecycle {
+    prevent_destroy = true
+  }
+}
+
+resource "aws_s3_bucket_versioning" "tf_state" {
+  bucket = aws_s3_bucket.tf_state.id
+  versioning_configuration {
+    status = "Enabled"
   }
 }
