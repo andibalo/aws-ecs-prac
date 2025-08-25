@@ -21,11 +21,3 @@ output "aws_security_group--all_sg" {
 output "aws_security_group--ecs_sg" {
   value = aws_security_group.ecs.id
 }
-
-output "aws_ecr_image--latest_fe_image_uri" {
-  value = data.aws_ecr_image.latest_fe_image.image_uri
-}
-
-output "aws_ecr_image--latest_be_image_uri" {
-  value = data.aws_ecr_image.latest_be_image.image_uri
-}
