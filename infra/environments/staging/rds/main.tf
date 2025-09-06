@@ -65,7 +65,10 @@ resource "aws_db_instance" "db" {
 
 resource "aws_db_subnet_group" "default" {
   name       = "main"
-  subnet_ids = [aws_subnet.private_db_1a.id, aws_subnet.private_db_1b.id]
+  subnet_ids = [
+    data.terraform_remote_state.main.outputs.private_db_subnet_1a_id, 
+    data.terraform_remote_state.main.outputs.private_db_subnet_1b_id
+  ]
 
   tags = {
     Name = "${var.app_name}-${var.environment}-db-subnet-group"

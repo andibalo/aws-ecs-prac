@@ -1,13 +1,3 @@
-variable "frontend_ecr_name" {
-  type    = string
-  default = "ecs-prac-stg/fe"
-}
-
-variable "backend_ecr_name" {
-  type    = string
-  default = "ecs-prac-stg/be"
-}
-
 variable "region" {
   type    = string
   default = "ap-southeast-1"

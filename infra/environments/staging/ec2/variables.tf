@@ -1,13 +1,3 @@
-variable "frontend_ecr_name" {
-  type    = string
-  default = "ecs-prac-stg/fe"
-}
-
-variable "backend_ecr_name" {
-  type    = string
-  default = "ecs-prac-stg/be"
-}
-
 variable "region" {
   type    = string
   default = "ap-southeast-1"
@@ -20,4 +10,8 @@ variable "app_name" {
 variable "environment" {
   type    = string
   default = "staging"
+}
+
+variable "ec2_key_name" {
+  type = string
 }
