@@ -122,7 +122,7 @@ Updates a task definition json we provide with a new image uri that will be depl
 React is deployed by building the react files into a static file which is then served by a web server like nginx. To pass environment variable we can do it during build time or runtime, in this case we do it during build time. To do it we need to create our environment variables in github actions, create a .env file in our github runner and append the env variables to it before building the image
 
 ## References
-
+- **Terraform Best Practice**: https://scalr.com/learning-center/managing-multiple-terraform-environments-a-practical-guide/
 - **Github Actions Components**: https://docs.github.com/en/actions/get-started/understand-github-actions
 - **Deploy To ECS from Github Actions**: https://docs.github.com/en/actions/how-tos/deploy/deploy-to-third-party-platforms/amazon-elastic-container-service
 - **Push Image To ECR from Github Actions**: https://github.com/aws-actions/amazon-ecr-login
@@ -149,7 +149,7 @@ Add CAA records for amazon to your DNS config. Ref: https://stackoverflow.com/qu
 - [ ] Move backend to private subnet
 - [ ] Integrate cloudfront CDN
 - [ ] Integrate golang migrate to CI/CD pipeline
-- [ ] Use terraform
+- [v] Use terraform
 - [ ] Integrate hashicorp vault
 
 ## Features

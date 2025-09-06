@@ -1,414 +1,3 @@
-# VPC
-resource "aws_vpc" "vpc" {
-  assign_generated_ipv6_cidr_block     = false
-  cidr_block                           = "12.0.0.0/16"
-  enable_dns_hostnames                 = true
-  enable_dns_support                   = true
-  enable_network_address_usage_metrics = false
-  instance_tenancy                     = "default"
-  ipv6_association_id                  = null
-  ipv6_cidr_block                      = null
-  ipv6_cidr_block_network_border_group = null
-  ipv6_ipam_pool_id                    = null
-  tags = {
-    "Name" = "${var.app_name}-${var.environment}-vpc"
-  }
-}
-
-# SUBNETS
-resource "aws_subnet" "public_1a" {
-  assign_ipv6_address_on_creation                = false
-  availability_zone                              = "ap-southeast-1a"
-  cidr_block                                     = "12.0.0.0/20"
-  customer_owned_ipv4_pool                       = null
-  enable_dns64                                   = false
-  enable_resource_name_dns_a_record_on_launch    = false
-  enable_resource_name_dns_aaaa_record_on_launch = false
-  ipv6_cidr_block                                = null
-  ipv6_cidr_block_association_id                 = null
-  ipv6_native                                    = false
-  map_public_ip_on_launch                        = false
-  outpost_arn                                    = null
-  private_dns_hostname_type_on_launch            = "ip-name"
-  tags = {
-    "Name" = "${var.app_name}-${var.environment}-subnet-public-1a"
-  }
-  vpc_id = aws_vpc.vpc.id
-}
-
-resource "aws_subnet" "public_1b" {
-  assign_ipv6_address_on_creation                = false
-  availability_zone                              = "ap-southeast-1b"
-  cidr_block                                     = "12.0.16.0/20"
-  customer_owned_ipv4_pool                       = null
-  enable_dns64                                   = false
-  enable_resource_name_dns_a_record_on_launch    = false
-  enable_resource_name_dns_aaaa_record_on_launch = false
-  ipv6_cidr_block                                = null
-  ipv6_cidr_block_association_id                 = null
-  ipv6_native                                    = false
-  map_public_ip_on_launch                        = false
-  outpost_arn                                    = null
-  private_dns_hostname_type_on_launch            = "ip-name"
-  tags = {
-    "Name" = "${var.app_name}-${var.environment}-subnet-public-1b"
-  }
-  vpc_id = aws_vpc.vpc.id
-}
-
-resource "aws_subnet" "private_app_1a" {
-  assign_ipv6_address_on_creation                = false
-  availability_zone                              = "ap-southeast-1a"
-  cidr_block                                     = "12.0.128.0/20"
-  customer_owned_ipv4_pool                       = null
-  enable_dns64                                   = false
-  enable_resource_name_dns_a_record_on_launch    = false
-  enable_resource_name_dns_aaaa_record_on_launch = false
-  ipv6_cidr_block                                = null
-  ipv6_cidr_block_association_id                 = null
-  ipv6_native                                    = false
-  map_public_ip_on_launch                        = false
-  outpost_arn                                    = null
-  private_dns_hostname_type_on_launch            = "ip-name"
-  tags = {
-    "Name" = "${var.app_name}-${var.environment}-subnet-private-app-1a"
-  }
-  vpc_id = aws_vpc.vpc.id
-}
-
-resource "aws_subnet" "private_db_1a" {
-  assign_ipv6_address_on_creation                = "false"
-  cidr_block                                     = "12.0.144.0/20"
-  enable_dns64                                   = "false"
-  enable_resource_name_dns_a_record_on_launch    = "false"
-  enable_resource_name_dns_aaaa_record_on_launch = "false"
-  ipv6_native                                    = "false"
-  map_public_ip_on_launch                        = "false"
-  private_dns_hostname_type_on_launch            = "ip-name"
-  tags = {
-    Name = "${var.app_name}-${var.environment}-subnet-private-db-1a"
-  }
-  vpc_id = aws_vpc.vpc.id
-}
-
-resource "aws_subnet" "private_db_1b" {
-  assign_ipv6_address_on_creation                = "false"
-  cidr_block                                     = "12.0.160.0/20"
-  enable_dns64                                   = "false"
-  enable_resource_name_dns_a_record_on_launch    = "false"
-  enable_resource_name_dns_aaaa_record_on_launch = "false"
-  ipv6_native                                    = "false"
-  map_public_ip_on_launch                        = "false"
-  private_dns_hostname_type_on_launch            = "ip-name"
-  tags = {
-    Name = "${var.app_name}-${var.environment}-subnet-private-db-1b"
-  }
-  vpc_id = aws_vpc.vpc.id
-}
-
-# SECURITY GROUPS
-resource "aws_security_group" "alb" {
-  description = "${var.app_name}-${var.environment}-alb-sg"
-
-  egress {
-    cidr_blocks = ["0.0.0.0/0"]
-    from_port   = "0"
-    protocol    = "-1"
-    self        = "false"
-    to_port     = "0"
-  }
-
-  ingress {
-    cidr_blocks = ["0.0.0.0/0"]
-    from_port   = "443"
-    protocol    = "tcp"
-    self        = "false"
-    to_port     = "443"
-  }
-
-  ingress {
-    cidr_blocks = ["0.0.0.0/0"]
-    from_port   = "80"
-    protocol    = "tcp"
-    self        = "false"
-    to_port     = "80"
-  }
-
-  name = "${var.app_name}-${var.environment}-alb-sg"
-
-  tags = {
-    Name = "${var.app_name}-${var.environment}-alb-sg"
-  }
-  vpc_id = aws_vpc.vpc.id
-}
-
-resource "aws_security_group" "app" {
-  description = "${var.app_name}-${var.environment}-app-sg"
-
-  egress {
-    cidr_blocks = ["0.0.0.0/0"]
-    from_port   = "0"
-    protocol    = "-1"
-    self        = "false"
-    to_port     = "0"
-  }
-
-  ingress {
-    from_port       = "22"
-    protocol        = "tcp"
-    security_groups = ["${aws_security_group.open_vpn.id}"]
-    self            = "false"
-    to_port         = "22"
-  }
-
-  ingress {
-    from_port       = "3000"
-    protocol        = "tcp"
-    security_groups = ["${aws_security_group.open_vpn.id}"]
-    self            = "false"
-    to_port         = "3000"
-  }
-
-  ingress {
-    from_port       = "443"
-    protocol        = "tcp"
-    security_groups = ["${aws_security_group.alb.id}"]
-    self            = "false"
-    to_port         = "443"
-  }
-
-  ingress {
-    from_port       = "80"
-    protocol        = "tcp"
-    security_groups = ["${aws_security_group.alb.id}"]
-    self            = "false"
-    to_port         = "80"
-  }
-
-  ingress {
-    from_port       = "8080"
-    protocol        = "tcp"
-    security_groups = ["${aws_security_group.alb.id}", "${aws_security_group.open_vpn.id}"]
-    self            = "false"
-    to_port         = "8080"
-  }
-
-  name = "${var.app_name}-${var.environment}-app-sg"
-
-  tags = {
-    Name = "${var.app_name}-${var.environment}-app-sg"
-  }
-  vpc_id = aws_vpc.vpc.id
-}
-
-resource "aws_security_group" "open_vpn" {
-  description = "open vpn sg"
-
-  egress {
-    cidr_blocks = ["0.0.0.0/0"]
-    from_port   = "0"
-    protocol    = "-1"
-    self        = "false"
-    to_port     = "0"
-  }
-
-  ingress {
-    cidr_blocks = ["0.0.0.0/0"]
-    from_port   = "1194"
-    protocol    = "udp"
-    self        = "false"
-    to_port     = "1194"
-  }
-
-  ingress {
-    cidr_blocks = ["0.0.0.0/0"]
-    from_port   = "22"
-    protocol    = "tcp"
-    self        = "false"
-    to_port     = "22"
-  }
-
-  ingress {
-    cidr_blocks = ["0.0.0.0/0"]
-    from_port   = "443"
-    protocol    = "tcp"
-    self        = "false"
-    to_port     = "443"
-  }
-
-  ingress {
-    cidr_blocks = ["0.0.0.0/0"]
-    from_port   = "943"
-    protocol    = "tcp"
-    self        = "false"
-    to_port     = "943"
-  }
-
-  ingress {
-    cidr_blocks = ["0.0.0.0/0"]
-    from_port   = "945"
-    protocol    = "tcp"
-    self        = "false"
-    to_port     = "945"
-  }
-
-  name = "${var.app_name}-${var.environment}-open-vpn-sg"
-
-  tags = {
-    Name = "${var.app_name}-${var.environment}-open-vpn-sg"
-  }
-  vpc_id = aws_vpc.vpc.id
-}
-
-resource "aws_security_group" "rds" {
-  description = "${var.app_name}-${var.environment}-rds-sg"
-
-  egress {
-    cidr_blocks = ["0.0.0.0/0"]
-    from_port   = "0"
-    protocol    = "-1"
-    self        = "false"
-    to_port     = "0"
-  }
-
-  ingress {
-    from_port       = "3306"
-    protocol        = "tcp"
-    security_groups = ["${aws_security_group.app.id}", "${aws_security_group.open_vpn.id}", "${aws_security_group.ecs.id}"]
-    self            = "false"
-    to_port         = "3306"
-  }
-
-  name = "${var.app_name}-${var.environment}-rds-sg"
-
-  tags = {
-    Name = "${var.app_name}-${var.environment}-rds-sg"
-  }
-  vpc_id = aws_vpc.vpc.id
-}
-
-resource "aws_security_group" "all" {
-  description = "${var.app_name}-${var.environment}-all-sg"
-
-  egress {
-    cidr_blocks = ["0.0.0.0/0"]
-    from_port   = "0"
-    protocol    = "-1"
-    self        = "false"
-    to_port     = "0"
-  }
-
-  ingress {
-    cidr_blocks = ["0.0.0.0/0"]
-    from_port   = "0"
-    protocol    = "-1"
-    self        = "false"
-    to_port     = "0"
-  }
-
-  name = "${var.app_name}-${var.environment}-all-sg"
-
-  tags = {
-    Name = "${var.app_name}-${var.environment}-all-sg"
-  }
-  vpc_id = aws_vpc.vpc.id
-}
-
-resource "aws_security_group" "ecs" {
-  description = "${var.app_name}-${var.environment}-ecs-sg"
-
-  egress {
-    cidr_blocks = ["0.0.0.0/0"]
-    from_port   = "0"
-    protocol    = "-1"
-    self        = "false"
-    to_port     = "0"
-  }
-
-  ingress {
-    from_port       = "0"
-    protocol        = "-1"
-    security_groups = ["${aws_security_group.alb.id}"]
-    self            = "false"
-    to_port         = "0"
-  }
-
-  name = "${var.app_name}-${var.environment}-ecs-sg"
-
-  tags = {
-    Name = "${var.app_name}-${var.environment}-ecs-sg"
-  }
-  vpc_id = aws_vpc.vpc.id
-}
-
-# INTERNET GATEWAY
-resource "aws_internet_gateway" "igw" {
-  tags = {
-    "Name" = "${var.app_name}-${var.environment}-igw"
-  }
-  vpc_id = aws_vpc.vpc.id
-}
-
-# ROUTE TABLES
-resource "aws_route_table" "public" {
-  propagating_vgws = []
-  route = [
-    {
-      carrier_gateway_id         = null
-      cidr_block                 = "0.0.0.0/0"
-      core_network_arn           = null
-      destination_prefix_list_id = null
-      egress_only_gateway_id     = null
-      gateway_id                 = aws_internet_gateway.igw.id
-      ipv6_cidr_block            = null
-      local_gateway_id           = null
-      nat_gateway_id             = null
-      network_interface_id       = null
-      transit_gateway_id         = null
-      vpc_endpoint_id            = null
-      vpc_peering_connection_id  = null
-    },
-  ]
-  tags = {
-    "Name" = "${var.app_name}-${var.environment}-rtb-public"
-  }
-  vpc_id = aws_vpc.vpc.id
-}
-
-resource "aws_route_table" "private" {
-  propagating_vgws = []
-  route            = []
-  tags = {
-    "Name" = "${var.app_name}-${var.environment}-rtb-private"
-  }
-  vpc_id = aws_vpc.vpc.id
-}
-
-resource "aws_route_table_association" "public_1a_subnet_association" {
-  subnet_id      = aws_subnet.public_1a.id
-  route_table_id = aws_route_table.public.id
-}
-
-resource "aws_route_table_association" "public_1b_subnet_association" {
-  subnet_id      = aws_subnet.public_1b.id
-  route_table_id = aws_route_table.public.id
-}
-
-resource "aws_route_table_association" "private_app_1a_subnet_association" {
-  subnet_id      = aws_subnet.private_app_1a.id
-  route_table_id = aws_route_table.private.id
-}
-
-resource "aws_route_table_association" "private_db_1a_subnet_association" {
-  subnet_id      = aws_subnet.private_db_1a.id
-  route_table_id = aws_route_table.private.id
-}
-
-resource "aws_route_table_association" "private_db_1b_subnet_association" {
-  subnet_id      = aws_subnet.private_db_1b.id
-  route_table_id = aws_route_table.private.id
-}
-
 # ECS
 resource "aws_ecs_cluster" "ecs" {
   name = "${var.app_name}-${var.environment}"
@@ -472,6 +61,31 @@ resource "aws_acm_certificate" "dns_cert" {
   options {
     certificate_transparency_logging_preference = "ENABLED"
     export                                      = "DISABLED"
+  }
+}
+
+# ALB
+resource "aws_lb" "alb" {
+  client_keep_alive                                            = 3600
+  customer_owned_ipv4_pool                                     = null
+  desync_mitigation_mode                                       = "defensive"
+  enable_cross_zone_load_balancing                             = true
+  enable_http2                                                 = true
+  enforce_security_group_inbound_rules_on_private_link_traffic = null
+  idle_timeout                                                 = 60
+  internal                                                     = false
+  ip_address_type                                              = "ipv4"
+  load_balancer_type                                           = "application"
+  name                                                         = "${var.app_name}-${var.environment}-alb"
+  security_groups = [
+    aws_security_group.alb.id,
+  ]
+  subnets = [
+    aws_subnet.public_1a.id,
+    aws_subnet.public_1b.id,
+  ]
+  tags = {
+    Name = "${var.app_name}-${var.environment}-alb"
   }
 }
 
@@ -574,6 +188,95 @@ resource "aws_lb_target_group" "ecs_fe" {
   }
 }
 
+# ALB RULE
+resource "aws_lb_listener" "http" {
+  load_balancer_arn                    = aws_lb.alb.arn
+  port                                 = 80
+  protocol                             = "HTTP"
+  routing_http_response_server_enabled = true
+  ssl_policy                           = null
+  tags = {
+    Name = "${var.app_name}-${var.environment}-alb-listerner-http"
+  }
+
+  default_action {
+    order            = 1
+    target_group_arn = null
+    type             = "redirect"
+
+    redirect {
+      host        = "#{host}"
+      path        = "/#{path}"
+      port        = "443"
+      protocol    = "HTTPS"
+      query       = "#{query}"
+      status_code = "HTTP_301"
+    }
+  }
+}
+
+resource "aws_lb_listener" "https" {
+  certificate_arn                      = aws_acm_certificate.dns_cert.arn
+  load_balancer_arn                    = aws_lb.alb.arn
+  port                                 = 443
+  protocol                             = "HTTPS"
+  routing_http_response_server_enabled = true
+  ssl_policy                           = "ELBSecurityPolicy-TLS13-1-2-Res-2021-06"
+  tags = {
+    Name = "${var.app_name}-${var.environment}-alb-listener-https"
+  }
+
+  default_action {
+    order            = 1
+    target_group_arn = aws_lb_target_group.ecs_fe.arn
+    type             = "forward"
+
+    forward {
+      stickiness {
+        duration = 3600
+        enabled  = false
+      }
+      target_group {
+        arn    = aws_lb_target_group.ecs_fe.arn
+        weight = 1
+      }
+    }
+  }
+}
+
+resource "aws_lb_listener_rule" "route_to_api" {
+  listener_arn = aws_lb_listener.https.arn
+  priority     = 1
+  tags = {
+    Name = "${var.app_name}-${var.environment}-alb-listener-rule-route-to-api"
+  }
+
+  action {
+    order            = 1
+    target_group_arn = aws_lb_target_group.ecs_be.arn
+    type             = "forward"
+
+    forward {
+      stickiness {
+        duration = 3600
+        enabled  = false
+      }
+      target_group {
+        arn    = aws_lb_target_group.ecs_be.arn
+        weight = 1
+      }
+    }
+  }
+
+  condition {
+    host_header {
+      values = [
+        "api.andisandbox.my.id",
+      ]
+    }
+  }
+}
+
 # EC2
 resource "aws_instance" "open_vpn" {
   ami                                  = "ami-0933f1385008d33c4"
@@ -666,68 +369,4 @@ resource "aws_s3_bucket_versioning" "tf_state" {
   versioning_configuration {
     status = "Enabled"
   }
-}
-
-# RDS
-resource "random_password" "db_master_password" {
-  length = 16
-}
-
-resource "aws_secretsmanager_secret" "dsn" {
-  name = "${var.app_name}-${var.environment}-dsn"
-}
-
-resource "aws_secretsmanager_secret_version" "rds_credentials" {
-  secret_id     = aws_secretsmanager_secret.dsn.id
-  secret_string = "${local.db_username}:${random_password.db_master_password.result}@tcp(${aws_db_instance.db.endpoint}:3306)/${aws_db_instance.db.db_name}"
-}
-
-resource "aws_db_instance" "db" {
-  allocated_storage                     = 20
-  auto_minor_version_upgrade            = true
-  availability_zone                     = "ap-southeast-1b"
-  backup_retention_period               = 1
-  backup_target                         = "region"
-  backup_window                         = "20:32-21:02"
-  ca_cert_identifier                    = "rds-ca-rsa2048-g1"
-  copy_tags_to_snapshot                 = true
-  database_insights_mode                = "standard"
-  db_name                               = local.db_name
-  delete_automated_backups              = true
-  engine                                = "mysql"
-  engine_lifecycle_support              = "open-source-rds-extended-support-disabled"
-  engine_version                        = "8.0.42"
-  iam_database_authentication_enabled   = false
-  identifier                            = "three-tier-staging"
-  instance_class                        = "db.t4g.micro"
-  iops                                  = 0
-  license_model                         = "general-public-license"
-  maintenance_window                    = "fri:18:11-fri:18:41"
-  max_allocated_storage                 = 1000
-  monitoring_interval                   = 0
-  monitoring_role_arn                   = null
-  multi_az                              = false
-  nchar_character_set_name              = null
-  network_type                          = "IPV4"
-  option_group_name                     = "default:mysql-8-0"
-  parameter_group_name                  = "default.mysql8.0"
-  performance_insights_enabled          = false
-  performance_insights_kms_key_id       = null
-  performance_insights_retention_period = 0
-  port                                  = 3306
-  publicly_accessible                   = false
-  replica_mode                          = null
-  replicate_source_db                   = null
-  skip_final_snapshot                   = true
-  storage_encrypted                     = true
-  storage_throughput                    = 0
-  storage_type                          = "gp2"
-  username                              = local.db_username
-  password                              = random_password.db_master_password.result
-  tags = {
-    Name = "${var.app_name}-${var.environment}-db"
-  }
-  vpc_security_group_ids = [
-    aws_security_group.rds.id,
-  ]
 }
