@@ -3,6 +3,7 @@ AWS_ACCOUNT_ID ?= ""
 AWS_REGION     ?= ""
 IMAGE_NAME     ?= ""
 IMAGE_TAG      ?= ""
+AWS_PROFILE    ?= andib
 
 # Calculated variables
 ECR_REPO = $(AWS_ACCOUNT_ID).dkr.ecr.$(AWS_REGION).amazonaws.com/$(IMAGE_NAME)
@@ -11,7 +12,7 @@ ECR_REPO = $(AWS_ACCOUNT_ID).dkr.ecr.$(AWS_REGION).amazonaws.com/$(IMAGE_NAME)
 
 ecr-push:
 	@echo "Logging in to AWS ECR..."
-	@aws ecr get-login-password --region $(AWS_REGION) | docker login --username AWS --password-stdin $(AWS_ACCOUNT_ID).dkr.ecr.$(AWS_REGION).amazonaws.com
+	@aws ecr get-login-password --region $(AWS_REGION) --profile $(AWS_PROFILE) | docker login --username AWS --password-stdin $(AWS_ACCOUNT_ID).dkr.ecr.$(AWS_REGION).amazonaws.com
 
 	@echo "Tagging image for ECR..."
 	@docker tag $(IMAGE_NAME):$(IMAGE_TAG) $(ECR_REPO):$(IMAGE_TAG)
