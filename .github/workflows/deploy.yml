@@ -15,8 +15,8 @@ env:
   BE_ECS_SERVICE: ${{ vars.BE_ECS_SERVICE }} 
   ECS_CLUSTER: ${{ vars.ECS_CLUSTER }} 
   AWS_REGION: ${{ vars.AWS_REGION }}      
-  FE_ECR_REPO_NAME: ecs-prac/fe
-  BE_ECR_REPO_NAME: ecs-prac/be
+  FE_ECR_REPO_NAME: ecs-prac-stg/fe
+  BE_ECR_REPO_NAME: ecs-prac-stg/be
 
 jobs:
   deploy_fe_stg:
